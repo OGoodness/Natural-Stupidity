@@ -1,3 +1,6 @@
+
+
+
 class State:
     tile_seq = [[]];
     row = 0;
@@ -8,6 +11,12 @@ class State:
         self.tile_seq = tile_seq;
         self.row = row;
         self.column = column;
+
+    def __init__(self):
+        super();
+        self.tile_seq =[[]];
+        self.row = 1;
+        self.column = 1;
 
     def getColumn(self):
         return self.column;
