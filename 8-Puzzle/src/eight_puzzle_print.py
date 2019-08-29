@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 #TODO set equal to state
 current = None
 goal = None
@@ -5,6 +7,8 @@ tiles = 8
 openStates = None
 closedState = None
 
+#check if the generated state is in open or closed
+#the purpose is to avoid a circle
 def check_inclusive(s):
     in_open = 0
     in_closed = 0
@@ -33,10 +37,15 @@ def check_inclusive(s):
 
     return ret
 
+def swapPositions(state, row_a, col_a, row_b, col_b):
+    state[row_a][col_a], state[row_b][col_b] = state[row_b][col_a], state[row_a][col_b]
+    return state
+
 def state_walk():
     closedState.add(current)
     openStates.add(current)
     walk_state = current.getTile_seq()
+
     row = 0
     col = 0
 
@@ -48,87 +57,70 @@ def state_walk():
                 break
     #TODO I can't seem to find where this is created in the normal code, it shouldbe +=
     depth = 1
+    #Item Moving Down
     if row - 1 >= 0:
-        """
-get the 2d array of current 
-define a temp 2d array and loop over current.tile_seq
-pass the value from current.tile_seq to temp array
-¡ü is correspond to (row, col) and (row-1, col)
-exchange these two tiles of temp
-define a new temp state via temp array
-call check_inclusive(temp state)
-do the next steps according to flag
-if flag = 1 //not in open and closed
-begin
-assign the child a heuristic value via heuristic_test(temp state);
-add the child to open
-end;
-if flag = 2 //in the open list
-if the child was reached by a shorter path
-then give the state on open the shorter path
-if flag = 3 //in the closed list
-if the child was reached by a shorter path then
-begin
-remove the state from closed;
-add the child to open
-end;
-//TODO your code end here
-        """
+        swapPositions(walk_state, row, col, row-1, col)
+        check = check_inclusive()
+        if check == 1:
+            #heuristic_test
+            print("heuristic_test")
+        elif check == 1:
+            #Open. Compare path to duplicate state, if shorter then give state on open, the shorter path
+            print("Compare path to duplicate state, if shorter then give state on open, the shorter path")
+        elif check == 1:
+            #Closed. Compare to ones in closed, if shorter then remove statre from closed and add the child to open
+            print("Closed. Compare to ones in closed, if shorter then remove statre from closed and add the child to open")
+
+
+
+    #Item Moving Up
     if row + 1 < len(walk_state):
-        """
-        get the 2d array of current 
-define a temp 2d array and loop over current.tile_seq
-pass the value from current.tile_seq to temp array
-¡ü is correspond to (row, col) and (row+1, col)
-exchange these two tiles of temp
-define a new temp state via temp array
-call check_inclusive(temp state)
-do the next steps according to flag
-if flag = 1 //not in open and closed
-begin
-assign the child a heuristic value via heuristic_test(temp state);
-add the child to open
-end;
-if flag = 2 //in the open list
-if the child was reached by a shorter path
-then give the state on open the shorter path
-if flag = 3 //in the closed list
-if the child was reached by a shorter path then
-begin
-remove the state from closed;
-add the child to open
-end;
-//TODO your code end here
-        """
+        swapPositions(walk_state, row, col, row+1, col)
+        check = check_inclusive()
+        if check == 1:
+            #heuristic_test
+            print("heuristic_test")
+        elif check == 1:
+            #Open. Compare path to duplicate state, if shorter then give state on open, the shorter path
+            print("Compare path to duplicate state, if shorter then give state on open, the shorter path")
+        elif check == 1:
+            #Closed. Compare to ones in closed, if shorter then remove statre from closed and add the child to open
+            print("Closed. Compare to ones in closed, if shorter then remove statre from closed and add the child to open")
+
+
+    #Item Moving Right
     if col + 1 < walk_state:
-        """
-        //TODO your code start here
-/**
-*get the 2d array of current 
-*define a temp 2d array and loop over current.tile_seq
-*pass the value from current.tile_seq to temp array
-*¡ü is correspond to (row, col) and (row, col+1)
-*exchange these two tiles of temp
-*define a new temp state via temp array
-*call check_inclusive(temp state)
-*do the next steps according to flag
-*if flag = 1 //not in open and closed
-*begin
-*assign the child a heuristic value via heuristic_test(temp state);
-*add the child to open
-*end;
-*if flag = 2 //in the open list
-*if the child was reached by a shorter path
-*then give the state on open the shorter path
-*if flag = 3 //in the closed list
-*if the child was reached by a shorter path then
-*begin
-*remove the state from closed;
-*add the child to open
-*end;
-*/
-//TODO your code end here
-        """
+        swapPositions(walk_state, row, col, row, col+1)
+        check = check_inclusive()
+        if check == 1:
+            #heuristic_test
+            print("heuristic_test")
+        elif check == 1:
+            #Open. Compare path to duplicate state, if shorter then give state on open, the shorter path
+            print("Compare path to duplicate state, if shorter then give state on open, the shorter path")
+        elif check == 1:
+            #Closed. Compare to ones in closed, if shorter then remove statre from closed and add the child to open
+            print("Closed. Compare to ones in closed, if shorter then remove statre from closed and add the child to open")
+
+
+        # Item Moving Left
+    if col - 1 < walk_state:
+        swapPositions(walk_state, row, col, row, col-1)
+        check = check_inclusive()
+        if check == 1:
+            #heuristic_test
+            print("heuristic_test")
+        elif check == 1:
+            #Open. Compare path to duplicate state, if shorter then give state on open, the shorter path
+            print("Compare path to duplicate state, if shorter then give state on open, the shorter path")
+        elif check == 1:
+            #Closed. Compare to ones in closed, if shorter then remove statre from closed and add the child to open
+            print("Closed. Compare to ones in closed, if shorter then remove statre from closed and add the child to open")
+
+
+
+
+
 
     #TODO python sort
 
