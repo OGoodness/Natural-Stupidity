@@ -1,9 +1,45 @@
-#TODO set equal to state
+# TODO set equal to state
+
+from . import State
+
 current = None
-goal = None
 tiles = 8
 openStates = None
 closedState = None
+
+
+class EightPuzzlePrint:
+    initial = State.State()
+    goalA = State.State()
+    tiles = 8
+
+    def __init__(self):
+        super()
+
+    def __init__(self, ini, goal, tile):
+        super()
+        self.initial = ini
+        self.goalA = goal
+        self.tiles = tile
+
+    class Start:
+        init_tile = {{2, 3, 6}, {1, 4, 8}, {7, 5, 0}}
+        init = State.State(init_tile, 0)
+
+        goal_tile = {{1, 2, 3}, {4, 5, 6}, {7, 8, 0}}
+        goal = State.State(goal_tile, 0)
+
+        initial = init
+        goalA = goal
+
+        tiles = 8
+
+        # Try code thread thing
+
+
+epp = EightPuzzlePrint()
+epp.Start()
+
 
 def check_inclusive(s):
     in_open = 0
@@ -12,7 +48,7 @@ def check_inclusive(s):
 
     for i in openStates:
         temp = i
-        if(temp == s):
+        if (temp == s):
             in_open = 1
             ret[1] = i
             break
@@ -33,6 +69,7 @@ def check_inclusive(s):
 
     return ret
 
+
 def state_walk():
     closedState.add(current)
     openStates.add(current)
@@ -40,13 +77,13 @@ def state_walk():
     row = 0
     col = 0
 
-    for i in range(0,len(walk_state)):
+    for i in range(0, len(walk_state)):
         for j in range(0, len(walk_state[i])):
             if walk_state[i][j] == 0:
                 row = i
                 col = j
                 break
-    #TODO I can't seem to find where this is created in the normal code, it shouldbe +=
+    # TODO I can't seem to find where this is created in the normal code, it shouldbe +=
     depth = 1
     if row - 1 >= 0:
         """
@@ -130,6 +167,6 @@ end;
 //TODO your code end here
         """
 
-    #TODO python sort
+    # TODO python sort
 
     current[0]
