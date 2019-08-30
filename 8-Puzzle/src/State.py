@@ -1,25 +1,25 @@
 class State:
-    tile_seq = [[]];
+    board = None
     depth = 0;
     weight = 0;
 
-    def __init__(self, tile_seq, depth, weight):
+    def __init__(self, board, depth = 0, weight = 0):
         super();
-        self.tile_seq = tile_seq;
+        self.board = board
         self.depth = depth;
         self.weight = weight;
 
     def getWeight(self):
         return self.weight;
 
-    def gettile_seq(self):
-        return self.tile_seq;
-
     def getDepth(self):
         return self.depth;
 
-    def settile_seq(self, tile_seq):
-        self.tile_seq = tile_seq;
+    def getBoard(self):
+        return self.board;
+
+    def setBoard(self, board):
+        self.board = board;
 
     def setDepth(self, depth):
         self.depth = depth;
@@ -35,5 +35,6 @@ class State:
                 if self.tile_seq[i][j] != op[i][j]:
                     return False;
         return True;
+
 
 
