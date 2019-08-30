@@ -1,48 +1,40 @@
-
-
-
 class State:
-    tile_seq = [[]];
-    row = 0;
-    column = 0;
+    board = None
+    depth = 0;
+    weight = 0;
 
-    def __init__(self, tile_seq, row, column):
+    def __init__(self, board, depth = 0, weight = 0):
         super();
-        self.tile_seq = tile_seq;
-        self.row = row;
-        self.column = column;
+        self.board = board
+        self.depth = depth;
+        self.weight = weight;
 
-    def __init__(self):
-        super();
-        self.tile_seq =[[]];
-        self.row = 1;
-        self.column = 1;
+    def getWeight(self):
+        return self.weight;
 
-    def getColumn(self):
-        return self.column;
+    def getDepth(self):
+        return self.depth;
 
-    def getTile_seq(self):
-        return self.tile_seq;
+    def getBoard(self):
+        return self.board;
 
-    def getRow(self):
-        return self.row;
+    def setBoard(self, board):
+        self.board = board;
 
-    def setTile_seq(self, tile_seq):
-        self.tile_seq = tile_seq;
+    def setDepth(self, depth):
+        self.depth = depth;
 
-    def setRow(self, row):
-        self.row = row;
-
-    def setColumn(self, column):
-        self.column = column;
+    def setWeight(self, weight):
+        self.weight = weight;
 
     def equals(self):
-        op = self.getTile_seq();
+        op = self.gettile_seq();
 
         for i in len(op):
             for j in len(op[i]):
                 if self.tile_seq[i][j] != op[i][j]:
                     return False;
         return True;
+
 
 
