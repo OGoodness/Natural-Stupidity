@@ -87,7 +87,7 @@ def check_inclusive(s):
     for i in openStates:
         temp = i
         # TODO: Need .Equals()
-        if (temp == s):
+        if temp == s:
             in_open = 1
             ret[1] = i
             break
@@ -130,6 +130,7 @@ def state_walk():
             #heuristic_test
             print("heuristic_test")
         elif check == 2:
+
             #Open. Compare path to duplicate state, if shorter then give state on open, the shorter path
             print("Compare path to duplicate state, if shorter then give state on open, the shorter path")
         elif check == 3:
@@ -184,6 +185,21 @@ def state_walk():
             print("Closed. Compare to ones in closed, if shorter then remove statre from closed and add the child to open")
 
 
-    #TODO python sort
 
-    current[0] = openStates[0]
+    openStates.sort(compare)
+    current = openStates[0]
+
+#TODO Add heuristic test
+
+
+def compare(a1, a2):
+    if ai.getWeight() > a2.getWeight():
+        return  1
+    elif a1.getWeight() == a2.getWeight():
+        if a1.getDepth() > a2.getDepth():
+            return 1
+        else:
+            return 0
+    else:
+        return  -1
+
