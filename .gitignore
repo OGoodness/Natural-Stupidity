@@ -1,4 +1,5 @@
 .DS_Store
 .idea
 outputs
-.venv
+venv
+8-Puzzle\src\__pycache__\State.cpython-37.pyc
