@@ -102,8 +102,20 @@ def check_inclusive(s):
         ret[0] = 3
     return ret
 
+def compare(a1, a2):
+    if a1.getWeight() > a2.getWeight():
+        return  1
+    elif a1.getWeight() == a2.getWeight():
+        if a1.getDepth() > a2.getDepth():
+            return 1
+        else:
+            return 0
+    else:
+        return  -1
+
 
 def state_walk():
+    global current
     #closedState.append(current)
     #openStates.remove(current)
     walk_state = current.getBoard()
@@ -179,24 +191,13 @@ def state_walk():
 
 
 
-#    current[0] = openStates[0]
-epp = EightPuzzlePrint()
-epp.start()
-epp.run()
-    openStates.sort(compare)
-    current = openStates[0]
+    #openStates.sort(compare)
+    #current = openStates[0]
 
 #TODO Add heuristic test
 
 
-def compare(a1, a2):
-    if ai.getWeight() > a2.getWeight():
-        return  1
-    elif a1.getWeight() == a2.getWeight():
-        if a1.getDepth() > a2.getDepth():
-            return 1
-        else:
-            return 0
-    else:
-        return  -1
+epp = EightPuzzlePrint()
+epp.start()
+epp.run()
 
