@@ -12,8 +12,8 @@ closedState = []
 
 
 class EightPuzzlePrint:
-    default_init = Board([[2, 3, 6], [1, 4, 8], [7, 5, 0]], 3, 3)
-    default_goal = Board([[1, 2, 3], [4, 5, 6], [7, 8, 0]], 3, 3)
+    default_init = Board([[2, 3, 6], [1, 4, 8], [7, 5, 0]], 2, 2)
+    default_goal = Board([[1, 2, 3], [4, 5, 6], [7, 8, 0]], 2, 2)
     initial = State(default_init)
     goalA = State(default_goal)
     tiles = 8
@@ -25,17 +25,14 @@ class EightPuzzlePrint:
         self.tiles = tile
 
     def start(self):
-
-        init_board = Board([[2, 3, 6], [1, 4, 8], [7, 5, 0]], 3, 3)
+        global current, goal
+        init_board = Board([[2, 3, 6], [1, 4, 8], [7, 5, 0]], 2, 2)
         init = State(init_board, 0, 0)
 
-        goal_board = Board([[1, 2, 3], [4, 5, 6], [7, 8, 0]], 3, 3)
+        goal_board = Board([[1, 2, 3], [4, 5, 6], [7, 8, 0]], 2, 2)
         goal = State(goal_board, 0, 0)
 
-        initial = init
-        goalA = goal
-
-
+        current = init
         tiles = 8
 
         # Try code thread thing
@@ -43,38 +40,35 @@ class EightPuzzlePrint:
 
     def run(self):
         print("Start State: \n")
+
+
         path = 0
         while current != goal:
             state_walk()
             print()
             path += 1
+            test = current.getBoard().getTile_seq()
+            for i in test:
+                for j in i:
+                    print(str(j) + " ", end=" ")
+                print()
         print("It took path"+ str(path) +" Iterations")
         print("The length of the path is: " + str(current.getDepth()))
 
-        test = goal.getBoard().getTile_seq()
-
-        for i in len(test):
-            for j in len(test[i]):
-                print(test[i][j]+" ")
-            print("\n")
-        print("Goal State")
 
 
-epp = EightPuzzlePrint()
-epp.start()
-epp.run()
 
 def __eq__(self, other):
     return self.getBoard().getTile_seq() == other.getBoard().getTile_seq()
-def __eq__(self, other):
+def __ne__(self, other):
     return self.getBoard().getTile_seq() != other.getBoard().getTile_seq()
 
-def swapPositions(state, row_a, col_a, row_b, col_b):
-    tile_seq = state.getTile_seq()
+def swapPositions(board, row_a, col_a, row_b, col_b):
+    tile_seq = board.getTile_seq()
     tile_seq[row_a][col_a], tile_seq[row_b][col_b] = tile_seq[row_b][col_a], tile_seq[row_a][col_b]
-    state.setTile_seq(tile_seq)
-    state.setRow(row_b)
-    state.setColumn(col_a)
+    board.setTile_seq(tile_seq)
+    board.setRow(row_b)
+    board.setColumn(col_a)
 
 
 #check if the generated state is in open or closed
@@ -106,17 +100,16 @@ def check_inclusive(s):
         ret[0] = 2
     elif in_open == 0 and in_closed == 1:
         ret[0] = 3
-    print(ret)
     return ret
 
 
 def state_walk():
-    closedState.add(current)
-    openStates.remove(current)
-    walk_state = current.getTile_seq()
+    #closedState.append(current)
+    #openStates.remove(current)
+    walk_state = current.getBoard()
 
     row = walk_state.getRow()
-    col = walk_state.getRow()
+    col = walk_state.getColumn()
 
 
     # TODO I can't seem to find where this is created in the normal code, it shouldbe +=
@@ -139,7 +132,7 @@ def state_walk():
 
 
     #Item Moving Up
-    if row + 1 < len(walk_state):
+    if row + 1 < len(walk_state.getTile_seq()):
         swapPositions(walk_state, row, col, row+1, col)
         check = check_inclusive(walk_state)
         if check == 1:
@@ -155,7 +148,7 @@ def state_walk():
 
 
     #Item Moving Right
-    if col + 1 < walk_state:
+    if col + 1 < len(walk_state.getTile_seq()[0]):
         swapPositions(walk_state, row, col, row, col+1)
         check = check_inclusive(walk_state)
         if check == 1:
@@ -169,8 +162,8 @@ def state_walk():
             print("Closed. Compare to ones in closed, if shorter then remove statre from closed and add the child to open")
 
 
-        # Item Moving Left
-    if col - 1 < walk_state:
+    # Item Moving Left
+    if col - 1 >= 0:
         swapPositions(walk_state, row, col, row, col-1)
         check = check_inclusive(walk_state)
         if check == 1:
@@ -186,4 +179,7 @@ def state_walk():
 
     #TODO python sort
 
-    current[0] = openStates[0]
+#    current[0] = openStates[0]
+epp = EightPuzzlePrint()
+epp.start()
+epp.run()
