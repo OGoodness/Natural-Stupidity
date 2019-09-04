@@ -5,34 +5,28 @@ from Board import Board
 from State import State
 
 current = None
-goal = None
+depth = 0
 tiles = 8
 openStates = []
 closedState = []
 
 
 class EightPuzzlePrint:
-    default_init = Board([[2, 3, 6], [1, 4, 8], [7, 5, 0]], 2, 2)
-    default_goal = Board([[1, 2, 3], [4, 5, 6], [7, 8, 0]], 2, 2)
+    default_init = [[2, 3, 6], [1, 4, 8], [7, 5, 0]]
+    default_goal = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
     initial = State(default_init)
-    goalA = State(default_goal)
+    goal = State(default_goal)
     tiles = 8
 
-    def __init__(self, init = default_init, goal = default_goal, tile = tiles):
+    def __init__(self, init = default_init, goal_set = default_goal, tile = tiles):
         super()
-        self.initial = init
-        self.goalA = goal
+        self.initial = State(init)
+        self.goal = State(goal_set)
         self.tiles = tile
 
     def start(self):
         global current, goal
-        init_board = Board([[2, 3, 6], [1, 4, 8], [7, 5, 0]], 2, 2)
-        init = State(init_board, 0, 0)
-
-        goal_board = Board([[1, 2, 3], [4, 5, 6], [7, 8, 0]], 2, 2)
-        goal = State(goal_board, 0, 0)
-
-        current = init
+        current = self.initial
         tiles = 8
 
         # Try code thread thing
@@ -40,28 +34,20 @@ class EightPuzzlePrint:
 
     def run(self):
         print("Start State: \n")
-
-
         path = 0
-        while current != goal:
+        while current != self.goal:
             state_walk()
             print()
             path += 1
-            test = current.getBoard().getTile_seq()
-            for i in test:
-                for j in i:
-                    print(str(j) + " ", end=" ")
-                print()
+            current.print()
+
         print("It took path"+ str(path) +" Iterations")
         print("The length of the path is: " + str(current.getDepth()))
 
 
 
 
-def __eq__(self, other):
-    return self.getBoard().getTile_seq() == other.getBoard().getTile_seq()
-def __ne__(self, other):
-    return self.getBoard().getTile_seq() != other.getBoard().getTile_seq()
+
 
 def swapPositions(board, row_a, col_a, row_b, col_b):
     tile_seq = board.getTile_seq()
@@ -70,6 +56,18 @@ def swapPositions(board, row_a, col_a, row_b, col_b):
     board.setRow(row_b)
     board.setColumn(col_a)
 
+
+def heuristic_test():
+    # heuristic_test
+    print("heuristic_test")
+
+def open():
+    # Open. Compare path to duplicate state, if shorter then give state on open, the shorter path
+    print("Compare path to duplicate state, if shorter then give state on open, the shorter path")
+
+def close():
+    # Closed. Compare to ones in closed, if shorter then remove statre from closed and add the child to open
+    print("Closed. Compare to ones in closed, if shorter then remove statre from closed and add the child to open")
 
 #check if the generated state is in open or closed
 #the purpose is to avoid a circle
@@ -80,7 +78,7 @@ def check_inclusive(s):
 
     for i in openStates:
         temp = i
-        # TODO: Need .Equals()
+
         if temp == s:
             in_open = 1
             ret[1] = i
@@ -88,30 +86,22 @@ def check_inclusive(s):
 
     for x in closedState:
         temp = x
-        # TODO: Need .Equals()
+
         if temp == s:
             in_closed = 1
             ret[1] = x
             break
 
     if in_open == 0 and in_closed == 0:
+        heuristic_test()
         ret[0] = 1
     elif in_open == 1 and in_closed == 0:
+        open()
         ret[0] = 2
     elif in_open == 0 and in_closed == 1:
+        close()
         ret[0] = 3
     return ret
-
-def compare(a1, a2):
-    if a1.getWeight() > a2.getWeight():
-        return  1
-    elif a1.getWeight() == a2.getWeight():
-        if a1.getDepth() > a2.getDepth():
-            return 1
-        else:
-            return 0
-    else:
-        return  -1
 
 
 def state_walk():
@@ -131,71 +121,28 @@ def state_walk():
     if row - 1 >= 0:
         swapPositions(walk_state, row, col, row-1, col)
         check = check_inclusive(walk_state)
-        if check == 1:
-            #heuristic_test
-            print("heuristic_test")
-        elif check == 2:
-
-            #Open. Compare path to duplicate state, if shorter then give state on open, the shorter path
-            print("Compare path to duplicate state, if shorter then give state on open, the shorter path")
-        elif check == 3:
-            #Closed. Compare to ones in closed, if shorter then remove statre from closed and add the child to open
-            print("Closed. Compare to ones in closed, if shorter then remove statre from closed and add the child to open")
-
-
 
     #Item Moving Up
     if row + 1 < len(walk_state.getTile_seq()):
         swapPositions(walk_state, row, col, row+1, col)
         check = check_inclusive(walk_state)
-        if check == 1:
-            #heuristic_test
-            print("heuristic_test")
-        elif check == 2:
-            #Open. Compare path to duplicate state, if shorter then give state on open, the shorter path
-            print("Compare path to duplicate state, if shorter then give state on open, the shorter path")
-        elif check == 3:
-            #Closed. Compare to ones in closed, if shorter then remove statre from closed and add the child to open
-            print("Closed. Compare to ones in closed, if shorter then remove statre from closed and add the child to open")
-
-
 
     #Item Moving Right
     if col + 1 < len(walk_state.getTile_seq()[0]):
         swapPositions(walk_state, row, col, row, col+1)
         check = check_inclusive(walk_state)
-        if check == 1:
-            #heuristic_test
-            print("heuristic_test")
-        elif check == 2:
-            #Open. Compare path to duplicate state, if shorter then give state on open, the shorter path
-            print("Compare path to duplicate state, if shorter then give state on open, the shorter path")
-        elif check == 3:
-            #Closed. Compare to ones in closed, if shorter then remove statre from closed and add the child to open
-            print("Closed. Compare to ones in closed, if shorter then remove statre from closed and add the child to open")
-
 
     # Item Moving Left
     if col - 1 >= 0:
         swapPositions(walk_state, row, col, row, col-1)
         check = check_inclusive(walk_state)
-        if check == 1:
-            #heuristic_test
-            print("heuristic_test")
-        elif check == 2:
-            #Open. Compare path to duplicate state, if shorter then give state on open, the shorter path
-            print("Compare path to duplicate state, if shorter then give state on open, the shorter path")
-        elif check == 3:
-            #Closed. Compare to ones in closed, if shorter then remove statre from closed and add the child to open
-            print("Closed. Compare to ones in closed, if shorter then remove statre from closed and add the child to open")
-
-
 
     #openStates.sort(compare)
-    #current = openStates[0]
+    current = openStates[0]
+
+
 
 #TODO Add heuristic test
-
 
 epp = EightPuzzlePrint()
 epp.start()

@@ -6,11 +6,13 @@ class Board:
     row = 0;
     column = 0;
 
-    def __init__(self, tile_seq = [], row = 0, column = 0):
+    def __init__(self, tile_seq = []):
         super();
+        empty_tile = [x for x in tile_seq if 0 in x][0]
+        empty_tile = (tile_seq.index(empty_tile), empty_tile.index(0))
         self.tile_seq = tile_seq;
-        self.row = row;
-        self.column = column;
+        self.row = empty_tile[0];
+        self.column = empty_tile[1];
 
 
     def getColumn(self):

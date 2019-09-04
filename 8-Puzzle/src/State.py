@@ -1,11 +1,16 @@
+from Board import Board
+
+
 class State:
     board = None
     depth = 0;
     weight = 0;
+    children = []
+
 
     def __init__(self, board, depth = 0, weight = 0):
         super();
-        self.board = board
+        self.board = Board(board)
         self.depth = depth;
         self.weight = weight;
 
@@ -17,6 +22,8 @@ class State:
 
     def getBoard(self):
         return self.board;
+    def getChildren(self):
+        return self.children
 
     def setBoard(self, board):
         self.board = board;
@@ -27,6 +34,26 @@ class State:
     def setWeight(self, weight):
         self.weight = weight;
 
+    def setChildren(self, children):
+        self.children = children
+
+    def __eq__(self, other):
+        return self.getBoard().getTile_seq() == other.getBoard().getTile_seq()
+
+    def __ne__(self, other):
+        return self.getBoard().getTile_seq() != other.getBoard().getTile_seq()
+
+    def compare(self, a2):
+        if self.getWeight() > a2.getWeight():
+            return 1
+        elif self.getWeight() == a2.getWeight():
+            if self.getDepth() > a2.getDepth():
+                return 1
+            else:
+                return 0
+        else:
+            return -1
+
     def equals(self):
         op = self.gettile_seq();
 
@@ -35,6 +62,12 @@ class State:
                 if self.tile_seq[i][j] != op[i][j]:
                     return False;
         return True;
+
+    def print(self):
+        for i in self.getBoard().getTile_seq():
+            for j in i:
+                print(str(j) + " ", end=" ")
+            print()
 
 
 
