@@ -5,7 +5,7 @@ class State:
     board = None
     depth = 0;
     weight = 0;
-    children = []
+    children = {"up": None, "down": None, "left": None, "right": None,}
 
 
     def __init__(self, board, depth = 0, weight = 0):
@@ -36,6 +36,7 @@ class State:
 
     def setChildren(self, children):
         self.children = children
+
 
     def __eq__(self, other):
         return self.getBoard().getTile_seq() == other.getBoard().getTile_seq()

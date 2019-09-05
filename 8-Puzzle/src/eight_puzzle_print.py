@@ -3,6 +3,9 @@
 
 from Board import Board
 from State import State
+import time
+from copy import copy, deepcopy
+
 
 current = None
 depth = 0
@@ -12,22 +15,19 @@ closedState = []
 
 
 class EightPuzzlePrint:
-    default_init = [[2, 3, 6], [1, 4, 8], [7, 5, 0]]
+    default_init = [[2, 3, 6], [1, 0, 8], [7, 5, 4]]
     default_goal = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
     initial = State(default_init)
     goal = State(default_goal)
     tiles = 8
 
     def __init__(self, init = default_init, goal_set = default_goal, tile = tiles):
+        global current
         super()
         self.initial = State(init)
         self.goal = State(goal_set)
         self.tiles = tile
-
-    def start(self):
-        global current, goal
         current = self.initial
-        tiles = 8
 
         # Try code thread thing
 
@@ -35,11 +35,14 @@ class EightPuzzlePrint:
     def run(self):
         print("Start State: \n")
         path = 0
+        current.print()
+
         while current != self.goal:
             state_walk()
             print()
             path += 1
             current.print()
+            time.sleep(10)
 
         print("It took path"+ str(path) +" Iterations")
         print("The length of the path is: " + str(current.getDepth()))
@@ -49,17 +52,15 @@ class EightPuzzlePrint:
 
 
 
-def swapPositions(board, row_a, col_a, row_b, col_b):
-    tile_seq = board.getTile_seq()
-    tile_seq[row_a][col_a], tile_seq[row_b][col_b] = tile_seq[row_b][col_a], tile_seq[row_a][col_b]
-    board.setTile_seq(tile_seq)
-    board.setRow(row_b)
-    board.setColumn(col_a)
+def swapPositions(original_tile_seq, row_a, col_a, row_b, col_b):
+    tile_seq = deepcopy(original_tile_seq)
+    tile_seq[row_a][col_a], tile_seq[row_b][col_b] = tile_seq[row_b][col_b], tile_seq[row_a][col_a]
+    return tile_seq
 
 
 def heuristic_test():
     # heuristic_test
-    print("heuristic_test")
+    print()
 
 def open():
     # Open. Compare path to duplicate state, if shorter then give state on open, the shorter path
@@ -108,43 +109,54 @@ def state_walk():
     global current
     #closedState.append(current)
     #openStates.remove(current)
-    walk_state = current.getBoard()
+    walk_state = current.getBoard().getTile_seq()[:]
+    moves = {}
 
-    row = walk_state.getRow()
-    col = walk_state.getColumn()
+    row = current.getBoard().getRow()
+    col = current.getBoard().getColumn()
+    current.print()
 
 
     # TODO I can't seem to find where this is created in the normal code, it shouldbe +=
     depth = 1
+    # TODO FIX THE PYTHON LIST POINTING TO SAME OBJECT
+    #Item Moving Up
+    if row - 1 >= 0:
+        print("UP")
+        temp = swapPositions(walk_state, row, col, row-1, col)
+        print(temp)
+        moves.update({"up": State(temp)})
+        check = check_inclusive(walk_state)
 
     #Item Moving Down
-    if row - 1 >= 0:
-        swapPositions(walk_state, row, col, row-1, col)
-        check = check_inclusive(walk_state)
-
-    #Item Moving Up
-    if row + 1 < len(walk_state.getTile_seq()):
-        swapPositions(walk_state, row, col, row+1, col)
-        check = check_inclusive(walk_state)
-
-    #Item Moving Right
-    if col + 1 < len(walk_state.getTile_seq()[0]):
-        swapPositions(walk_state, row, col, row, col+1)
+    if row + 1 < len(walk_state):
+        print("down")
+        temp = swapPositions(walk_state, row, col, row+1, col)
+        moves.update({"down": State(temp)})
         check = check_inclusive(walk_state)
 
     # Item Moving Left
     if col - 1 >= 0:
-        swapPositions(walk_state, row, col, row, col-1)
+        print("left")
+        temp = swapPositions(walk_state, row, col, row, col-1)
+        moves.update({"left": State(temp)})
         check = check_inclusive(walk_state)
 
+    #Item Moving Right
+    if col + 1 < len(walk_state[0]):
+        print("Right")
+        temp = swapPositions(walk_state, row, col, row, col+1)
+        moves.update({"right": State(temp)})
+        check = check_inclusive(walk_state)
+
+    current.setChildren(moves)
     #openStates.sort(compare)
-    current = openStates[0]
+    #current = openStates[0]
 
 
 
 #TODO Add heuristic test
 
 epp = EightPuzzlePrint()
-epp.start()
 epp.run()
 
