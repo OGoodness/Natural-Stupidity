@@ -159,12 +159,15 @@ def evaluate_child(flag, child):
         openStates.append(child)
     if flag[0] == 2:
         state = openStates[flag[1]]
-        past_path = state.getDepth()
-        state.setDepth(child.getDepth())
-        state.setWeight(state.getWeight() - (past_path - state.getDepth()))
+        if child.depth < state.depth:
+            past_path = state.getDepth()
+            state.setDepth(child.getDepth())
+            state.setWeight(state.getWeight() - (past_path - state.getDepth()))
     if flag[0] == 3:
-        closedStates.remove(child)
-        openStates.append(child)
+        state = closedStates[flag[1]]
+        if child.depth < state.depth:
+            closedStates.remove(child)
+            openStates.append(child)
 
 
 # check if the generated state is in open or closed
