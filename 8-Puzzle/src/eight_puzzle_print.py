@@ -1,21 +1,22 @@
 # TODO: Optimize code, it's a little messy
 # TODO: Current varioable needs to be set initially, need to implement sorting, need to print out properly
+from functools import cmp_to_key
 
 from Board import Board
 from State import State
 import time
 from copy import copy, deepcopy
 
-current = None
+current = State([[2, 3, 6], [1, 0, 8], [7, 5, 4]])
 depth = 0
 tiles = 8
 openStates = []
 closedStates = []
-default_init = [[2, 3, 6], [1, 0, 8], [7, 5, 4]]
-default_goal = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
 
 
 class EightPuzzlePrint:
+    default_init = [[2, 3, 6], [1, 0, 8], [7, 5, 4]]
+    default_goal = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
     initial = State(default_init)
     goal = State(default_goal)
     tiles = 8
@@ -35,7 +36,7 @@ class EightPuzzlePrint:
         path = 0
         current.print()
 
-        openStates.append([current])
+        openStates.append(current)
         while current != self.goal:
             state_walk()
             print()
@@ -53,19 +54,20 @@ def swapPositions(original_tile_seq, row_a, col_a, row_b, col_b):
     return tile_seq
 
 
-def compare(a1, a2):
-    if a1.getWeight() > a2.getWeight():
-        return 1
-    elif a1.getWeight() == a2.getWeight():
-        if a1.getDepth() > a2.getDepth():
+def compare(a1=None, a2=None):
+    if a1 is not None and a2 is not None:
+        if a1.getWeight() > a2.getWeight():
             return 1
+        elif a1.getWeight() == a2.getWeight():
+            if a1.getDepth() > a2.getDepth():
+                return 1
+            else:
+                return 0
         else:
-            return 0
-    else:
-        return -1
+            return -1
 
 
-def heuristic_test():
+def heuristic_test(check):
     # heuristic_test
     print()
 
@@ -133,35 +135,33 @@ def state_walk():
     # Item Moving Up
     if row - 1 >= 0:
         print("UP")
-        temp = swapPositions(walk_state, row, col, row - 1, col)
+        temp = State(swapPositions(walk_state, row, col, row - 1, col))
         print(temp)
-        moves.update({"up": State(temp)})
-        flag = check_inclusive(walk_state)
-        evaluate_child(flag)
+        flag = check_inclusive(temp)
+        evaluate_child(flag, temp)
 
     # Item Moving Down
     if row + 1 < len(walk_state):
         print("down")
-        temp = swapPositions(walk_state, row, col, row + 1, col)
-        moves.update({"down": State(temp)})
-        evaluate_child(flag)
+        temp = State(swapPositions(walk_state, row, col, row + 1, col))
+        flag = check_inclusive(temp)
+        evaluate_child(flag, temp)
 
     # Item Moving Left
     if col - 1 >= 0:
         print("left")
-        temp = swapPositions(walk_state, row, col, row, col - 1)
-        moves.update({"left": State(temp)})
-        evaluate_child(flag)
+        temp = State(swapPositions(walk_state, row, col, row, col - 1))
+        flag = check_inclusive(temp)
+        evaluate_child(flag, temp)
 
     # Item Moving Right
     if col + 1 < len(walk_state[0]):
         print("Right")
-        temp = swapPositions(walk_state, row, col, row, col + 1)
-        moves.update({"right": State(temp)})
-        evaluate_child(flag)
+        temp = State(swapPositions(walk_state, row, col, row, col + 1))
+        flag = check_inclusive(temp)
+        evaluate_child(flag, temp)
 
-    current.setChildren(moves)
-    # openStates.sort(compare)
+    openStates.sort(key=cmp_to_key(compare))
     current = openStates[0]
 
 
