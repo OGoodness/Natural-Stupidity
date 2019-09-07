@@ -16,7 +16,6 @@ default_goal = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
 
 
 class EightPuzzlePrint:
-
     initial = State(default_init)
     goal = State(default_goal)
     tiles = 8
@@ -36,6 +35,7 @@ class EightPuzzlePrint:
         path = 0
         current.print()
 
+        openStates.append([current])
         while current != self.goal:
             state_walk()
             print()
@@ -68,6 +68,20 @@ def compare(a1, a2):
 def heuristic_test():
     # heuristic_test
     print()
+
+
+def evaluate_child(flag, child):
+    if flag[0] == 1:
+        heuristic_test(child)
+        openStates.append(child)
+    if flag[0] == 2:
+        state = openStates[flag[1]]
+        past_path = state.getDepth()
+        state.setDepth(child.getDepth())
+        state.setWeight(state.getWeight() - (past_path - state.getDepth()))
+    if flag[0] == 3:
+        closedStates.remove(child)
+        openStates.append(child)
 
 
 # check if the generated state is in open or closed
@@ -122,31 +136,32 @@ def state_walk():
         temp = swapPositions(walk_state, row, col, row - 1, col)
         print(temp)
         moves.update({"up": State(temp)})
-        check = check_inclusive(walk_state)
+        flag = check_inclusive(walk_state)
+        evaluate_child(flag)
 
     # Item Moving Down
     if row + 1 < len(walk_state):
         print("down")
         temp = swapPositions(walk_state, row, col, row + 1, col)
         moves.update({"down": State(temp)})
-        check = check_inclusive(walk_state)
+        evaluate_child(flag)
 
     # Item Moving Left
     if col - 1 >= 0:
         print("left")
         temp = swapPositions(walk_state, row, col, row, col - 1)
         moves.update({"left": State(temp)})
-        check = check_inclusive(walk_state)
+        evaluate_child(flag)
 
     # Item Moving Right
     if col + 1 < len(walk_state[0]):
         print("Right")
         temp = swapPositions(walk_state, row, col, row, col + 1)
         moves.update({"right": State(temp)})
-        check = check_inclusive(walk_state)
+        evaluate_child(flag)
 
     current.setChildren(moves)
-    openStates.sort(compare)
+    # openStates.sort(compare)
     current = openStates[0]
 
 
