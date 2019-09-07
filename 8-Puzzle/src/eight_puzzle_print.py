@@ -7,6 +7,8 @@ from State import State
 import time
 from copy import copy, deepcopy
 
+default_init = [[2, 3, 6], [1, 0, 8], [7, 5, 4]]
+default_goal = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
 current = State([[2, 3, 6], [1, 0, 8], [7, 5, 4]])
 depth = 0
 tiles = 8
@@ -15,8 +17,7 @@ closedStates = []
 
 
 class EightPuzzlePrint:
-    default_init = [[2, 3, 6], [1, 0, 8], [7, 5, 4]]
-    default_goal = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
+
     initial = State(default_init)
     goal = State(default_goal)
     tiles = 8
@@ -67,9 +68,89 @@ def compare(a1=None, a2=None):
             return -1
 
 
-def heuristic_test(check):
-    # heuristic_test
-    print()
+def heuristic_test(state):
+
+    currentboard = state.getBoard().getTile_seq()
+    goalboard = default_goal
+
+    # h(1)
+    h1 = 0
+
+    for x in range(0, len(currentboard)):
+        for y in range(0, len(currentboard)):
+            if currentboard[x][y] != goalboard[x][y]:
+                h1 = h1 + 1
+
+    #/ (2) Sum of distances out of place
+    #// TODO your code start here
+    h2 = 0
+    diff = 0
+    for a in range(0, 9):
+        for x in range(0, len(currentboard)):
+            for y in range(0, len(currentboard)):
+                if currentboard[x][y] == a:
+                    ccol = y
+                    crow = x
+                if goalboard[x][y] == a:
+                    gcol = y
+                    grow = x
+
+        cdiff = ccol - gcol
+        rdiff = crow - grow
+
+        diff = diff + abs(cdiff) + abs(rdiff)
+    h2 = diff
+
+#    // (3) 2 x the number of direct tile reversals
+
+    h3 = 0
+    cfound = 0
+    gfound = 0
+    cnewfound = 0
+    gnewfound = 0
+    reversals = 0
+    for z in range(1, 9):
+        for x in range(0, len(currentboard)):
+            for y in range(0, len(currentboard)):
+                if currentboard[x][y] == z:
+                    ccol = y
+                    crow = x
+                    cfound = 1
+                if goalboard[x][y] == z:
+                    gcol = y
+                    grow = x
+                    gfound = 1
+
+                if cfound == 1 and gfound == 1:
+                    cfound = 0
+                    gfound = 0
+                    cdiff = ccol - gcol
+                    rdiff = crow - grow
+                    if abs(cdiff + rdiff) == 1:
+                        findvalue = currentboard[grow][gcol]
+                        for a in range(0, len(currentboard)):
+                            for b in range(0, len(currentboard)):
+                                if currentboard[a][b] == findvalue:
+                                    cnewcol = b
+                                    cnewrow = a
+                                    cnewfound = 1
+                                if goalboard[a][b] == findvalue:
+                                    gnewcol = b
+                                    gnewrow = a
+                                    gnewfound = 1
+
+                                if cnewfound == 1 and gnewfound == 1:
+                                    cnewfound = 0
+                                    gnewfound = 0
+                                    cnewdiff = abs(cnewcol - gnewcol)
+                                    rnewdiff = abs(cnewrow - gnewrow)
+                                    if cnewdiff + rnewdiff == 1 and ccol == gnewcol and crow == gnewrow:
+                                        reversals = reversals + 1
+
+    h3 = reversals
+
+ #   // set the heuristic value for current state
+    state.setWeight(state.getDepth()+h1+h2+h3)
 
 
 def evaluate_child(flag, child):
