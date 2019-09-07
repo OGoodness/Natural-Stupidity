@@ -8,6 +8,7 @@ import time
 from copy import copy, deepcopy
 
 default_init = [[2, 3, 6], [1, 0, 8], [7, 5, 4]]
+#default_init = [[5, 1, 3], [2, 6, 8], [0, 4, 7]]
 default_goal = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
 current = State([[2, 3, 6], [1, 0, 8], [7, 5, 4]])
 depth = 0
@@ -44,7 +45,8 @@ class EightPuzzlePrint:
             path += 1
             current.print()
 
-        print("It took path" + str(path) + " Iterations")
+
+        print("It took path " + str(path) + " Iterations")
         print("The length of the path is: " + str(current.getDepth()))
 
 
@@ -61,6 +63,8 @@ def compare(a1=None, a2=None):
         elif a1.getWeight() == a2.getWeight():
             if a1.getDepth() > a2.getDepth():
                 return 1
+            elif a1.getDepth() < a2.getDepth():
+                return -1
             else:
                 return 0
         else:
@@ -146,7 +150,7 @@ def heuristic_test(state):
                                     if cnewdiff + rnewdiff == 1 and ccol == gnewcol and crow == gnewrow:
                                         reversals = reversals + 1
 
-    h3 = reversals
+    h3 = reversals * 2
 
  #   // set the heuristic value for current state
     state.setWeight(state.getDepth()+h1+h2+h3)
@@ -210,7 +214,6 @@ def state_walk():
 
     row = current.getBoard().getRow()
     col = current.getBoard().getColumn()
-    current.print()
 
     # TODO I can't seem to find where this is created in the normal code, it shouldbe +=
     depth = 1
