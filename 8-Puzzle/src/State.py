@@ -3,40 +3,42 @@ from Board import Board
 
 class State:
     board = None
-    depth = 0;
-    weight = 0;
-    children = {"up": None, "down": None, "left": None, "right": None,}
+    depth = 0
+    weight = 0
 
+    # Not needed
+    # children = {"up": None, "down": None, "left": None, "right": None,}
 
-    def __init__(self, board, depth = 0, weight = 0):
-        super();
+    def __init__(self, board, depth=0, weight=0):
+        super()
         self.board = Board(board)
-        self.depth = depth;
-        self.weight = weight;
+        self.depth = depth
+        self.weight = weight
 
     def getWeight(self):
-        return self.weight;
+        return self.weight
 
     def getDepth(self):
-        return self.depth;
+        return self.depth
 
     def getBoard(self):
-        return self.board;
-    def getChildren(self):
-        return self.children
+        return self.board
+
+    # Not needed
+    # def getChildren(self):
+    #    return self.children
 
     def setBoard(self, board):
-        self.board = board;
+        self.board = board
 
     def setDepth(self, depth):
-        self.depth = depth;
+        self.depth = depth
 
     def setWeight(self, weight):
-        self.weight = weight;
+        self.weight = weight
 
-    def setChildren(self, children):
-        self.children = children
-
+    # def setChildren(self, children):
+    #    self.children = children
 
     def __eq__(self, other):
         return self.getBoard().getTile_seq() == other.getBoard().getTile_seq()
@@ -56,12 +58,12 @@ class State:
             return -1
 
     def equals(self):
-        op = self.gettile_seq();
+        op = self.gettile_seq()
 
         for i in len(op):
             for j in len(op[i]):
                 if self.tile_seq[i][j] != op[i][j]:
-                    return False;
+                    return False
         return True;
 
     def print(self):
@@ -69,6 +71,3 @@ class State:
             for j in i:
                 print(str(j) + " ", end=" ")
             print()
-
-
-
