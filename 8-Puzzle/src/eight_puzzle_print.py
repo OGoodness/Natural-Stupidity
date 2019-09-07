@@ -219,7 +219,7 @@ def state_walk():
     if row - 1 >= 0:
         print("up")
         temp = State(swapPositions(walk_state, row, col, row - 1, col))
-        temp.setDepth(temp.getDepth() + 1)
+        temp.setDepth(current.getDepth() + 1)
         flag = check_inclusive(temp)
         evaluate_child(flag, temp)
 
@@ -227,7 +227,7 @@ def state_walk():
     if row + 1 < len(walk_state):
         print("down")
         temp = State(swapPositions(walk_state, row, col, row + 1, col))
-        temp.setDepth(temp.getDepth() + 1)
+        temp.setDepth(current.getDepth() + 1)
         flag = check_inclusive(temp)
         evaluate_child(flag, temp)
 
@@ -235,7 +235,7 @@ def state_walk():
     if col - 1 >= 0:
         print("left")
         temp = State(swapPositions(walk_state, row, col, row, col - 1))
-        temp.setDepth(temp.getDepth() + 1)
+        temp.setDepth(current.getDepth() + 1)
         flag = check_inclusive(temp)
         evaluate_child(flag, temp)
 
@@ -243,7 +243,7 @@ def state_walk():
     if col + 1 < len(walk_state[0]):
         print("Right")
         temp = State(swapPositions(walk_state, row, col, row, col + 1))
-        temp.setDepth(temp.getDepth() + 1)
+        temp.setDepth(current.getDepth() + 1)
         flag = check_inclusive(temp)
         evaluate_child(flag, temp)
 
