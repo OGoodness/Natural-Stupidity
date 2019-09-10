@@ -5,40 +5,57 @@ class State:
     board = None
     depth = 0
     weight = 0
+    parent = None
 
-    # Not needed
-    # children = {"up": None, "down": None, "left": None, "right": None,}
 
     def __init__(self, board, depth=0, weight=0):
         super()
         self.board = Board(board)
         self.depth = depth
         self.weight = weight
+        self.path = [self]
 
     def getWeight(self):
         return self.weight
 
+    def getPath(self):
+        return self.path
+
     def getDepth(self):
         return self.depth
+
+    def getParent(self):
+        return self.parent
+
 
     def getBoard(self):
         return self.board
 
-    # Not needed
-    # def getChildren(self):
-    #    return self.children
-
     def setBoard(self, board):
         self.board = board
+
+    def setParent(self, state):
+        self.parent = state
 
     def setDepth(self, depth):
         self.depth = depth
 
     def setWeight(self, weight):
         self.weight = weight
+    # TODO: make print path function work. I may not be setting path correctly
+    def printPath(self):
+        path_array = [self]
+        current = self
+        while True:
+            parent = current.getParent()
+            if parent == None:
+                break
+            path_array.append(parent)
+            current = parent
+        print(path_array)
 
-    # def setChildren(self, children):
-    #    self.children = children
+        for i, state in reversed(list(enumerate(path_array))):
+            state.print()
 
     def __eq__(self, other):
         return self.getBoard().getTile_seq() == other.getBoard().getTile_seq()

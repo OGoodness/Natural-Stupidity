@@ -27,7 +27,7 @@ class EightPuzzlePrint:
         global current
         super()
         self.initial = State(init)
-        self.goal = State(goal_set)
+        self.goal = State([[0, 2, 6], [1, 3, 8], [7, 5, 4]])
         self.tiles = tile
         current = self.initial
 
@@ -38,12 +38,20 @@ class EightPuzzlePrint:
         path = 0
         current.print()
 
-        openStates.append(current)
-        while current != self.goal:
-            state_walk()
-            print()
-            path += 1
-            current.print()
+        print("Goal State: \n")
+        self.goal.print()
+
+        breadth_search(current, self.goal, 0)
+
+        # openStates.clear()
+        # closedStates.clear()
+        #
+        # openStates.append(current)
+        # while current != self.goal:
+        #     state_walk()
+        #     print()
+        #     path += 1
+        #     current.print()
 
 
         print("It took path " + str(path) + " Iterations")
@@ -70,9 +78,59 @@ def compare(a1=None, a2=None):
         else:
             return -1
 
+def breadth_search(current, goal, depth):
+    closedStates = []
+    openStates = [current]
+
+    while current != goal:
+        print("Depth: " + str(depth))
+        nextRow = []
+        for i, state in enumerate(openStates):
+            closedStates.insert(0, state)
+            board = state.getBoard().getTile_seq()[:]
+
+            if state == goal:
+                print("Matched")
+                state.getParent().print()
+                current = goal
+                break
+
+            row = state.getBoard().getRow()
+            col = state.getBoard().getColumn()
+
+            # Item Moving Up
+            if row - 1 >= 0:
+                temp = State(swapPositions(board, row, col, row - 1, col))
+                temp.setDepth(current.getDepth() + 1)
+                temp.setParent(state)
+                nextRow.append(temp)
+
+            # Item Moving Down
+            if row + 1 < len(board):
+                temp = State(swapPositions(board, row, col, row + 1, col))
+                temp.setDepth(current.getDepth() + 1)
+                temp.setParent(state)
+                nextRow.append(temp)
+
+            # Item Moving Left
+            if col - 1 >= 0:
+                temp = State(swapPositions(board, row, col, row, col - 1))
+                temp.setDepth(current.getDepth() + 1)
+                temp.setParent(state)
+                nextRow.append(temp)
+
+            # Item Moving Right
+            if col + 1 < len(board[0]):
+                temp = State(swapPositions(board, row, col, row, col + 1))
+                temp.setDepth(current.getDepth() + 1)
+                temp.setParent(state)
+                nextRow.append(temp)
+        openStates = nextRow[:]
+        depth += 1
+    current.printPath()
+
 
 def heuristic_test(state):
-
     currentboard = state.getBoard().getTile_seq()
     goalboard = default_goal
 
@@ -215,9 +273,9 @@ def state_walk():
     row = current.getBoard().getRow()
     col = current.getBoard().getColumn()
 
-    # TODO I can't seem to find where this is created in the normal code, it shouldbe +=
+
     depth = 1
-    # TODO FIX THE PYTHON LIST POINTING TO SAME OBJECT
+
     # Item Moving Up
     if row - 1 >= 0:
         print("up")
