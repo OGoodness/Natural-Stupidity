@@ -91,8 +91,7 @@ def breadth_search(current, goal, depth):
 
             if state == goal:
                 print("Matched")
-                state.getParent().print()
-                current = goal
+                current = state
                 break
 
             row = state.getBoard().getRow()

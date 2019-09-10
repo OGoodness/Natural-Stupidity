@@ -48,15 +48,16 @@ class State:
         current = self
         while True:
             parent = current.getParent()
-            if parent == None:
+            if not isinstance(parent, State):
                 break
             path_array.append(parent)
             current = parent
-        print(path_array)
+
+
 
         for i, state in reversed(list(enumerate(path_array))):
             state.print()
-
+            print()
     def __eq__(self, other):
         return self.getBoard().getTile_seq() == other.getBoard().getTile_seq()
 
