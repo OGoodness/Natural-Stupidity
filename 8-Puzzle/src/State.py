@@ -7,7 +7,6 @@ class State:
     weight = 0
     parent = None
 
-
     def __init__(self, board, depth=0, weight=0):
         super()
         self.board = Board(board)
@@ -27,7 +26,6 @@ class State:
     def getParent(self):
         return self.parent
 
-
     def getBoard(self):
         return self.board
 
@@ -42,6 +40,7 @@ class State:
 
     def setWeight(self, weight):
         self.weight = weight
+
     # TODO: make print path function work. I may not be setting path correctly
     def printPath(self):
         path_array = [self]
@@ -53,11 +52,10 @@ class State:
             path_array.append(parent)
             current = parent
 
-
-
         for i, state in reversed(list(enumerate(path_array))):
             state.print()
             print()
+
     def __eq__(self, other):
         return self.getBoard().getTile_seq() == other.getBoard().getTile_seq()
 

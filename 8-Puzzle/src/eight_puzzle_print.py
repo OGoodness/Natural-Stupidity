@@ -7,7 +7,7 @@ from State import State
 import time
 from copy import copy, deepcopy
 
-default_init = [[2, 3, 6], [1, 0, 8], [7, 5, 4]]
+default_init = [[2, 3, 6], [1, 4, 8], [7, 5, 0]]
 #default_init = [[5, 1, 3], [2, 6, 8], [0, 4, 7]]
 default_goal = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
 current = State([[2, 3, 6], [1, 0, 8], [7, 5, 4]])
@@ -18,16 +18,15 @@ closedStates = []
 
 
 class EightPuzzlePrint:
-
     initial = State(default_init)
     goal = State(default_goal)
     tiles = 8
 
-    def __init__(self, init=default_init, goal_set=default_goal, tile=tiles):
+    def __init__(self, init=default_init, goal=default_goal, tile=tiles):
         global current
         super()
         self.initial = State(init)
-        self.goal = State([[0, 2, 6], [1, 3, 8], [7, 5, 4]])
+        self.goal = State(goal)
         self.tiles = tile
         current = self.initial
 
@@ -39,20 +38,25 @@ class EightPuzzlePrint:
         current.print()
 
         print("Goal State: \n")
-        self.goal.print()
+        #self.goal.print()
 
-        breadth_search(current, self.goal, 0)
+        # breadth_search(current, self.goal, 0)
 
         # openStates.clear()
         # closedStates.clear()
         #
-        # openStates.append(current)
-        # while current != self.goal:
-        #     state_walk()
-        #     print()
-        #     path += 1
-        #     current.print()
-
+        openStates.append(current)
+        while current != self.goal:
+            state_walk()
+            #print()
+            path += 1
+            #current.print()
+            if len(openStates) % 500 == 0:
+                print(len(openStates))
+                print(str(len(closedStates)) + "\n")
+            if len(closedStates) % 500 == 0:
+                print(len(openStates))
+                print(str(len(closedStates)) + "\n")
 
         print("It took path " + str(path) + " Iterations")
         print("The length of the path is: " + str(current.getDepth()))
@@ -77,6 +81,7 @@ def compare(a1=None, a2=None):
                 return 0
         else:
             return -1
+
 
 def breadth_search(current, goal, depth):
     closedStates = []
@@ -141,9 +146,8 @@ def heuristic_test(state):
             if currentboard[x][y] != goalboard[x][y]:
                 h1 = h1 + 1
 
-    #/ (2) Sum of distances out of place
-    #// TODO your code start here
-    h2 = 0
+    # / (2) Sum of distances out of place
+    # // TODO your code start here
     diff = 0
     for a in range(0, 9):
         for x in range(0, len(currentboard)):
@@ -161,9 +165,8 @@ def heuristic_test(state):
         diff = diff + abs(cdiff) + abs(rdiff)
     h2 = diff
 
-#    // (3) 2 x the number of direct tile reversals
+    #    // (3) 2 x the number of direct tile reversals
 
-    h3 = 0
     cfound = 0
     gfound = 0
     cnewfound = 0
@@ -209,8 +212,8 @@ def heuristic_test(state):
 
     h3 = reversals * 2
 
- #   // set the heuristic value for current state
-    state.setWeight(state.getDepth()+h1+h2+h3)
+    #   // set the heuristic value for current state
+    state.setWeight(state.getDepth() + h1 + h2 + h3)
 
 
 def evaluate_child(flag, child):
@@ -242,18 +245,20 @@ def check_inclusive(state):
         if open_state == state:
             in_open = 1
             ret[1] = index_open
-            index_open += 1
             break
+        index_open += 1
+
 
     index_closed = 0
     for closed_state in closedStates:
         if closed_state == state:
             in_closed = 1
             ret[1] = index_closed
-            index_closed += 1
             break
+        index_closed += 1
 
-    if in_closed == 1 and in_closed == 1:
+
+    if in_closed == 1 and in_open == 1:
         print("Why")
     if in_open == 0 and in_closed == 0:
         ret[0] = 1
@@ -269,17 +274,14 @@ def state_walk():
     closedStates.append(current)
     openStates.remove(current)
     walk_state = current.getBoard().getTile_seq()[:]
-    moves = {}
 
     row = current.getBoard().getRow()
     col = current.getBoard().getColumn()
 
 
-    depth = 1
-
     # Item Moving Up
     if row - 1 >= 0:
-        print("up")
+        #print("up")
         temp = State(swapPositions(walk_state, row, col, row - 1, col))
         temp.setDepth(current.getDepth() + 1)
         flag = check_inclusive(temp)
@@ -287,7 +289,7 @@ def state_walk():
 
     # Item Moving Down
     if row + 1 < len(walk_state):
-        print("down")
+        #print("down")
         temp = State(swapPositions(walk_state, row, col, row + 1, col))
         temp.setDepth(current.getDepth() + 1)
         flag = check_inclusive(temp)
@@ -295,7 +297,7 @@ def state_walk():
 
     # Item Moving Left
     if col - 1 >= 0:
-        print("left")
+        #print("left")
         temp = State(swapPositions(walk_state, row, col, row, col - 1))
         temp.setDepth(current.getDepth() + 1)
         flag = check_inclusive(temp)
@@ -303,7 +305,7 @@ def state_walk():
 
     # Item Moving Right
     if col + 1 < len(walk_state[0]):
-        print("Right")
+        #print("Right")
         temp = State(swapPositions(walk_state, row, col, row, col + 1))
         temp.setDepth(current.getDepth() + 1)
         flag = check_inclusive(temp)
