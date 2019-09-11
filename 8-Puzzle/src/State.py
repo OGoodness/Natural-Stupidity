@@ -7,11 +7,6 @@ class State:
     weight = 0
     parent = None
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 6b520e8ef4a2b2d27fbff8f92e0b3587452d2c6b
     def __init__(self, board, depth=0, weight=0):
         super()
         self.board = Board(board)
