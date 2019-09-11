@@ -196,6 +196,8 @@ def check_inclusive(state):
             index_closed += 1
             break
 
+    if in_closed == 1 and in_closed == 1:
+        print("Why")
     if in_open == 0 and in_closed == 0:
         ret[0] = 1
     elif in_open == 1 and in_closed == 0:

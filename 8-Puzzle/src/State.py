@@ -35,14 +35,6 @@ class State:
         self.depth = depth
 
     def setWeight(self, weight):
-        self.weight = weight
-
-    # def setChildren(self, children):
-    #    self.children = children
-
-    def __eq__(self, other):
-        return self.getBoard().getTile_seq() == other.getBoard().getTile_seq()
-
     def __ne__(self, other):
         return self.getBoard().getTile_seq() != other.getBoard().getTile_seq()
 
@@ -56,6 +48,14 @@ class State:
                 return 0
         else:
             return -1
+
+        self.weight = weight
+
+    # def setChildren(self, children):
+    #    self.children = children
+
+    def __eq__(self, other):
+        return self.getBoard().getTile_seq() == other.getBoard().getTile_seq()
 
     def equals(self):
         op = self.gettile_seq()
