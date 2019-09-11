@@ -8,6 +8,7 @@ class State:
     parent = None
 
 
+
     def __init__(self, board, depth=0, weight=0):
         super()
         self.board = Board(board)

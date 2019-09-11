@@ -27,7 +27,7 @@ class EightPuzzlePrint:
         global current
         super()
         self.initial = State(init)
-        self.goal = State([[0, 2, 6], [1, 3, 8], [7, 5, 4]])
+        self.goal = State(goal_set)
         self.tiles = tile
         current = self.initial
 
@@ -124,6 +124,8 @@ def breadth_search(current, goal, depth):
                 temp.setDepth(current.getDepth() + 1)
                 temp.setParent(state)
                 nextRow.append(temp)
+
+        nextRow = [x for x in nextRow if x not in closedStates]
         openStates = nextRow[:]
         depth += 1
     current.printPath()
