@@ -138,106 +138,81 @@ def breadth_search(current, goal, depth):
         depth += 1
     current.printPath()
 
-
+# Gets heuristic value for heuristic search
 def heuristic_test(state):
+
+    #Gets parameter state board and goalboard
     currentboard = state.getBoard().getTile_seq()
     goalboard = default_goal
 
-    # h(1)
+    # h(1) Counts tiles that are out of place
     h1 = 0
 
+    # Iterates through currentboard
     for x in range(0, len(currentboard)):
         for y in range(0, len(currentboard)):
+            # If currentboard is not in goalboard location add h1
             if currentboard[x][y] != goalboard[x][y]:
                 h1 = h1 + 1
 
-    # / (2) Sum of distances out of place
-    # // TODO your code start here
+    # / (2) Sum of tile distances out of place
     diff = 0
+    # Iterates through goalboard
     for i in range(0, len(goalboard)):
         for j in range(0, len(goalboard)):
+            #Sets goalboard location values
             gcol = i
             grow = j
+            # Iterates through currentboard
             for x in range(0, len(currentboard)):
                 for y in range(0, len(currentboard)):
+                    # If currentboard value equals goalboard value set current location values
                     if currentboard[x][y] == goalboard[i][j]:
                         ccol = y
                         crow = x
 
+        # Calculating difference between currentboard and goalboard locations
         cdiff = ccol - gcol
         rdiff = crow - grow
 
         diff = diff + abs(cdiff) + abs(rdiff)
     h2 = diff
 
-    #    // (3) 2 x the number of direct tile reversals
-
+    #    // (3) Finds direct reversal value in current board state
     reversals = 0
+    # Iterate through currentboard
     for y in range(0, len(currentboard)):
         for x in range(0, len(currentboard)):
+            # If reaches right end of board and is NOT on the bottom of the board
             if x == 2 and y != 2:
+                # If currentboard value belongs in the tile below
                 if currentboard[x][y] == default_goal[x][y + 1] and currentboard[x][y] != 0:
+                    # If the value below belongs in the tile above increments reversal
                     if currentboard[x][y + 1] == default_goal[x][y]:
                         reversals = reversals + 1
+            # If on the bottom of the board, but not on the right side yet
             elif y == 2 and x != 2:
+                # currentboard value checking to see if it belongs to the right tile
                 if currentboard[x][y] == default_goal[x + 1][y] and currentboard[x][y] != 0:
+                    # If belongs to the right tile, checks if the right tiles belongs where currentboard value is located
                     if currentboard[x + 1][y] == default_goal[x][y]:
                         reversals = reversals + 1
-            # In this situation if x != 2, and y != 2
+            # If not on a border of the board
             elif y != 2 and x != 2:
+                # Checks tile to the right if it belongs there
                 if currentboard[x][y] == default_goal[x + 1][y] and currentboard[x][y] != 0:
+                    #If it does it checks if tile to the right belongs where current tile is
                     if currentboard[x + 1][y] == default_goal[x][y]:
                         reversals = reversals + 1
+                #Checks tile below if it belongs there
                 if currentboard[x][y] == default_goal[x][y + 1] and currentboard[x][y] != 0:
+                    #If it does it checks if tile below belongs where current tile is
                     if currentboard[x][y + 1] == default_goal[x][y]:
                         reversals = reversals + 1
-
-    # cfound = 0
-    # gfound = 0
-    # cnewfound = 0
-    # gnewfound = 0
-    # reversals = 0
-    # for z in range(1, 9):
-    #    for x in range(0, len(currentboard)):
-    #        for y in range(0, len(currentboard)):
-    #            if currentboard[x][y] == z:
-    #                ccol = y
-    #                crow = x
-    #                cfound = 1
-    #            if goalboard[x][y] == z:
-    #                gcol = y
-    #                grow = x
-    #                gfound = 1
-    #
-    #            if cfound == 1 and gfound == 1:
-    #                cfound = 0
-    #                gfound = 0
-    #                cdiff = ccol - gcol
-    #                rdiff = crow - grow
-    #                if abs(cdiff + rdiff) == 1:
-    #                    findvalue = currentboard[grow][gcol]
-    #                    for a in range(0, len(currentboard)):
-    #                        for b in range(0, len(currentboard)):
-    #                            if currentboard[a][b] == findvalue:
-    #                                cnewcol = b
-    #                                cnewrow = a
-    #                                cnewfound = 1
-    #                            if goalboard[a][b] == findvalue:
-    #                                gnewcol = b
-    #                                gnewrow = a
-    #                                gnewfound = 1
-
-    #                            if cnewfound == 1 and gnewfound == 1:
-    #                                cnewfound = 0
-    #                                gnewfound = 0
-    #                                cnewdiff = abs(cnewcol - gnewcol)
-    #                                rnewdiff = abs(cnewrow - gnewrow)
-    #                                if cnewdiff + rnewdiff == 1 and ccol == gnewcol and crow == gnewrow:
-    #                                    reversals = reversals + 1
 
     h3 = reversals * 2
 
-    #   // set the heuristic value for current state
+    # Returns calculated heuristic values
     state.setWeight(state.getDepth() + h1 + h2 + h3)
 
 
