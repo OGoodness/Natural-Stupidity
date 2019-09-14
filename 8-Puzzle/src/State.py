@@ -62,26 +62,6 @@ class State:
     def __ne__(self, other):
         return self.getBoard().getTile_seq() != other.getBoard().getTile_seq()
 
-    def compare(self, a2):
-        if self.getWeight() > a2.getWeight():
-            return 1
-        elif self.getWeight() == a2.getWeight():
-            if self.getDepth() > a2.getDepth():
-                return 1
-            else:
-                return 0
-        else:
-            return -1
-
-    def equals(self):
-        op = self.gettile_seq()
-
-        for i in len(op):
-            for j in len(op[i]):
-                if self.tile_seq[i][j] != op[i][j]:
-                    return False
-        return True;
-
     def print(self):
         for i in self.getBoard().getTile_seq():
             for j in i:

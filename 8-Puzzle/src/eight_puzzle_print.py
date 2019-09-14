@@ -2,70 +2,77 @@
 # TODO: Current varioable needs to be set initially, need to implement sorting, need to print out properly
 from functools import cmp_to_key
 
-from Board import Board
 from State import State
 import time
-from copy import copy, deepcopy
+from copy import deepcopy
 
-# default_init = [[2, 3, 6], [1, 4, 8], [7, 5, 0]]
+#Default initial state
 default_init = [[1, 2, 3], [5, 6, 0], [7, 8, 4]]
+#Default goal state
 default_goal = [[1, 2, 3], [5, 8, 6], [0, 7, 4]]
-current = State([[2, 3, 6], [1, 0, 8], [7, 5, 4]])
-depth = 0
+
+#Number of blocks in Eight Puzzle
 tiles = 8
-openStates = []
-closedStates = []
 
 
 class EightPuzzlePrint:
-    initial = State(default_init)
-    goal = State(default_goal)
-    tiles = 8
+    current = None
+    initial = None
+    goal = None
+    tiles = 0
 
     def __init__(self, init=default_init, goal=default_goal, tile=tiles):
-        global current
         super()
         self.initial = State(init)
         self.goal = State(goal)
         self.tiles = tile
-        current = self.initial
+        self.current = State(init)
 
         # Try code thread thing
 
     def run(self):
-        global current
         print("Start State: \n")
-        path = 0
-        current_holder = current
-        current.print()
+        self.initial.print()
 
         print("Goal State: \n")
         self.goal.print()
 
-        breadth_search(current, self.goal, 0)
+        timeStampBreadthStart = time.time()*1000.0
+        breadth_search_start(self)
+        timeStampBreadthEnd = time.time()*1000.0
+        print("The total time for breadth first search is: " + str(timeStampBreadthEnd-timeStampBreadthStart))
 
-        openStates.clear()
-        closedStates.clear()
+        timeStampHeuristicStart = time.time()*1000.0
+        #heuristic_search_start(self)
+        timeStampHeuristicEnd = time.time()*1000.0
+        print("The total time for heuristic first search is: " + str(timeStampHeuristicEnd-timeStampHeuristicStart))
 
-        current = current_holder
 
-        openStates.append(current)
-        while current != self.goal:
-            state_walk()
-            # print()
-            path += 1
-            # current.print()
-            if len(openStates) % 500 == 0:
-                print(len(openStates))
-                print(str(len(closedStates)) + "\n")
-            if len(closedStates) % 500 == 0:
-                print(len(openStates))
-                print(str(len(closedStates)) + "\n")
 
-        print(current.print())
-        print("It took path " + str(path) + " Iterations")
-        print("The length of the path is: " + str(current.getDepth()))
 
+def heuristic_search_start(self):
+    openStates = []
+    closedStates = []
+    path = 0
+    current = self.current
+    goal = self.goal
+
+    openStates.append(current)
+    while current != goal:
+        state_walk(openStates, closedStates, current)
+        # print()
+        path += 1
+        # current.print()
+        if len(openStates) % 500 == 0:
+            print(len(openStates))
+            print(str(len(closedStates)) + "\n")
+        if len(closedStates) % 500 == 0:
+            print(len(openStates))
+            print(str(len(closedStates)) + "\n")
+        current = openStates[0]
+    current.print()
+    print("It took path " + str(path) + " Iterations")
+    print("The length of the path is: " + str(current.getDepth()))
 
 def swapPositions(original_tile_seq, row_a, col_a, row_b, col_b):
     tile_seq = deepcopy(original_tile_seq)
@@ -88,12 +95,14 @@ def compare(a1=None, a2=None):
             return -1
 
 
-def breadth_search(current, goal, depth):
+def breadth_search_start(self):
+    depth = 0
+    current = self.current
+    goal = self.goal
     closedStates = []
     openStates = [current]
 
     while current != goal:
-        print("Depth: " + str(depth))
         nextRow = []
         for i, state in enumerate(openStates):
             closedStates.insert(0, state)
@@ -134,8 +143,11 @@ def breadth_search(current, goal, depth):
                 temp.setDepth(current.getDepth() + 1)
                 temp.setParent(state)
                 nextRow.append(temp)
+        nextRow = [x for x in nextRow if x not in closedStates]
         openStates = nextRow[:]
         depth += 1
+
+    print("Depth: " + str(depth))
     current.printPath()
 
 
@@ -222,7 +234,7 @@ def heuristic_test(state):
     state.setWeight(state.getDepth() + h1 + h2 + h3)
 
 
-def evaluate_child(flag, child):
+def evaluate_child(flag, child, openStates, closedStates):
     if flag[0] == 1:
         heuristic_test(child)
         openStates.append(child)
@@ -241,7 +253,7 @@ def evaluate_child(flag, child):
 
 # check if the generated state is in open or closed
 # the purpose is to avoid a circle
-def check_inclusive(state):
+def check_inclusive(state, openStates, closedStates):
     in_open = 0
     in_closed = 0
     ret = [-1, -1]
@@ -273,8 +285,7 @@ def check_inclusive(state):
     return ret
 
 
-def state_walk():
-    global current
+def state_walk(openStates, closedStates, current):
     closedStates.append(current)
     openStates.remove(current)
     walk_state = current.getBoard().getTile_seq()[:]
@@ -287,35 +298,35 @@ def state_walk():
         # print("up")
         temp = State(swapPositions(walk_state, row, col, row - 1, col))
         temp.setDepth(current.getDepth() + 1)
-        flag = check_inclusive(temp)
-        evaluate_child(flag, temp)
+        flag = check_inclusive(temp, openStates, closedStates)
+        evaluate_child(flag, temp, openStates, closedStates)
 
     # Item Moving Down
     if row + 1 < len(walk_state):
         # print("down")
         temp = State(swapPositions(walk_state, row, col, row + 1, col))
         temp.setDepth(current.getDepth() + 1)
-        flag = check_inclusive(temp)
-        evaluate_child(flag, temp)
+        flag = check_inclusive(temp, openStates, closedStates)
+        evaluate_child(flag, temp, openStates, closedStates)
 
     # Item Moving Left
     if col - 1 >= 0:
         # print("left")
         temp = State(swapPositions(walk_state, row, col, row, col - 1))
         temp.setDepth(current.getDepth() + 1)
-        flag = check_inclusive(temp)
-        evaluate_child(flag, temp)
+        flag = check_inclusive(temp, openStates, closedStates)
+        evaluate_child(flag, temp, openStates, closedStates)
 
     # Item Moving Right
     if col + 1 < len(walk_state[0]):
         # print("Right")
         temp = State(swapPositions(walk_state, row, col, row, col + 1))
         temp.setDepth(current.getDepth() + 1)
-        flag = check_inclusive(temp)
-        evaluate_child(flag, temp)
+        flag = check_inclusive(temp, openStates, closedStates)
+        evaluate_child(flag, temp, openStates, closedStates)
 
     openStates.sort(key=cmp_to_key(compare))
-    current = openStates[0]
+    #current = openStates[0]
 
 
 # TODO Add heuristic test
