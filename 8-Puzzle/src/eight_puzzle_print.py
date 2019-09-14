@@ -194,19 +194,19 @@ def heuristic_test(state):
             elif y == 2 and x != 2:
                 # currentboard value checking to see if it belongs to the right tile
                 if currentboard[x][y] == default_goal[x + 1][y] and currentboard[x][y] != 0:
-                    # If belongs to the right tile, checks if the right tiles belongs where currentboard value is located
+                    # If belongs to the right tile checks if the right tiles belongs where currentboard value is located
                     if currentboard[x + 1][y] == default_goal[x][y]:
                         reversals = reversals + 1
             # If not on a border of the board
             elif y != 2 and x != 2:
                 # Checks tile to the right if it belongs there
                 if currentboard[x][y] == default_goal[x + 1][y] and currentboard[x][y] != 0:
-                    #If it does it checks if tile to the right belongs where current tile is
+                    # If it does it checks if tile to the right belongs where current tile is
                     if currentboard[x + 1][y] == default_goal[x][y]:
                         reversals = reversals + 1
-                #Checks tile below if it belongs there
+                # Checks tile below if it belongs there
                 if currentboard[x][y] == default_goal[x][y + 1] and currentboard[x][y] != 0:
-                    #If it does it checks if tile below belongs where current tile is
+                    # If it does it checks if tile below belongs where current tile is
                     if currentboard[x][y + 1] == default_goal[x][y]:
                         reversals = reversals + 1
 
