@@ -9,7 +9,7 @@ from copy import deepcopy
 #Default initial state
 default_init = [[1, 2, 3], [5, 6, 0], [7, 8, 4]]
 #Default goal state
-default_goal = [[1, 2, 3], [5, 8, 6], [0, 7, 4]]
+default_goal = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
 
 #Number of blocks in Eight Puzzle
 tiles = 8
@@ -147,7 +147,6 @@ def breadth_search_start(self):
         depth += 1
 
     print("Depth: " + str(depth))
-    current.printPath()
 
 # Gets heuristic value for heuristic search
 def heuristic_test(state):
