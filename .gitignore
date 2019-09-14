@@ -2,4 +2,4 @@
 .idea
 outputs
 venv
-8-Puzzle\src\__pycache__\State.cpython-37.pyc
+8-Puzzle\src\__pycache__\*
