@@ -8,12 +8,9 @@ import time
 from copy import copy, deepcopy
 
 default_init = [[2, 3, 6], [1, 4, 8], [7, 5, 0]]
-<<<<<<< HEAD
 # default_init = [[1, 2, 3], [5, 6, 0], [7, 8, 4]]
-=======
-#default_init = [[1, 2, 3], [5, 6, 0], [7, 8, 4]]
-#default_init = [[2, 1, 3], [5, 4, 0], [7, 8, 6]]
->>>>>>> a9b6a743cb7c7ac17e39c8b9cab77b09e4801230
+# default_init = [[1, 2, 3], [5, 6, 0], [7, 8, 4]]
+# default_init = [[2, 1, 3], [5, 4, 0], [7, 8, 6]]
 default_goal = [[1, 2, 3], [5, 8, 6], [0, 7, 4]]
 current = State([[2, 3, 6], [1, 0, 8], [7, 5, 4]])
 depth = 0
@@ -195,12 +192,12 @@ def heuristic_test(state):
                     if currentboard[x][y + 1] == default_goal[x][y]:
                         reversals = reversals + 1
 
-    #cfound = 0
-    #gfound = 0
-    #cnewfound = 0
-    #gnewfound = 0
-    #reversals = 0
-    #for z in range(1, 9):
+    # cfound = 0
+    # gfound = 0
+    # cnewfound = 0
+    # gnewfound = 0
+    # reversals = 0
+    # for z in range(1, 9):
     #    for x in range(0, len(currentboard)):
     #        for y in range(0, len(currentboard)):
     #            if currentboard[x][y] == z:
