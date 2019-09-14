@@ -15,30 +15,21 @@ class Board:
         self.column = empty_tile[1]
 
 
-    def getColumn(self):
+    def get_column(self):
         return self.column
 
-    def getTile_seq(self):
+    def get_tile_seq(self):
         return self.tile_seq
 
-    def getRow(self):
+    def get_row(self):
         return self.row
 
-    def setTile_seq(self, tile_seq):
+    def set_tile_seq(self, tile_seq):
         self.tile_seq = tile_seq
 
-    def setRow(self, row):
+    def set_row(self, row):
         self.row = row
 
-    def setColumn(self, column):
+    def set_column(self, column):
         self.column = column
-
-    def equals(self):
-        op = self.getTile_seq()
-
-        for i in len(op):
-            for j in len(op[i]):
-                if self.tile_seq[i][j] != op[i][j]:
-                    return False
-        return True
 
