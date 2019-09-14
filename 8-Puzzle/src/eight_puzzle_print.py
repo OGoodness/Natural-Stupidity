@@ -7,8 +7,8 @@ from State import State
 import time
 from copy import copy, deepcopy
 
-# default_init = [[2, 3, 6], [1, 4, 8], [7, 5, 0]]
-default_init = [[1, 2, 3], [5, 6, 0], [7, 8, 4]]
+default_init = [[2, 3, 6], [1, 4, 8], [7, 5, 0]]
+# default_init = [[1, 2, 3], [5, 6, 0], [7, 8, 4]]
 default_goal = [[1, 2, 3], [5, 8, 6], [0, 7, 4]]
 current = State([[2, 3, 6], [1, 0, 8], [7, 5, 4]])
 depth = 0
@@ -48,7 +48,6 @@ class EightPuzzlePrint:
         closedStates.clear()
 
         current = current_holder
-
         openStates.append(current)
         while current != self.goal:
             state_walk()
@@ -73,19 +72,18 @@ def swapPositions(original_tile_seq, row_a, col_a, row_b, col_b):
     return tile_seq
 
 
-def compare(a1=None, a2=None):
-    if a1 is not None and a2 is not None:
-        if a1.getWeight() > a2.getWeight():
+def compare(a1, a2):
+    if a1.getWeight() > a2.getWeight():
+        return 1
+    elif a1.getWeight() == a2.getWeight():
+        if a1.getDepth() > a2.getDepth():
             return 1
-        elif a1.getWeight() == a2.getWeight():
-            if a1.getDepth() > a2.getDepth():
-                return 1
-            elif a1.getDepth() < a2.getDepth():
-                return -1
-            else:
-                return 0
-        else:
+        elif a1.getDepth() < a2.getDepth():
             return -1
+        else:
+            return 0
+    else:
+        return -1
 
 
 def breadth_search(current, goal, depth):
@@ -164,7 +162,6 @@ def heuristic_test(state):
                         ccol = y
                         crow = x
 
-
         cdiff = ccol - gcol
         rdiff = crow - grow
 
@@ -222,20 +219,26 @@ def heuristic_test(state):
     state.setWeight(state.getDepth() + h1 + h2 + h3)
 
 
+# This file will determine if the child needs to be added to open,
 def evaluate_child(flag, child):
+    # Gets the heuristic value for child and adds it to open state.
     if flag[0] == 1:
         heuristic_test(child)
         openStates.append(child)
+
+    # If the value is an open state and the path is better the state value will be updated.
     if flag[0] == 2:
         state = openStates[flag[1]]
         if child.depth < state.depth:
             past_path = state.getDepth()
             state.setDepth(child.getDepth())
             state.setWeight(state.getWeight() - (past_path - state.getDepth()))
+
+    # If the value is a closed state and the path is better it remove the value from the closed state and adds the better state to open
     if flag[0] == 3:
         state = closedStates[flag[1]]
         if child.depth < state.depth:
-            closedStates.remove(child)
+            closedStates.remove(state)
             openStates.append(child)
 
 
@@ -244,8 +247,10 @@ def evaluate_child(flag, child):
 def check_inclusive(state):
     in_open = 0
     in_closed = 0
+    # ret[0] is a flag, ret[1] is the index of the value that needs to be changed
     ret = [-1, -1]
 
+    # Determines if a value in open states needs to be changed
     index_open = 0
     for open_state in openStates:
         if open_state == state:
@@ -254,6 +259,7 @@ def check_inclusive(state):
             break
         index_open += 1
 
+    # Determines if a value in closed needs to be changed
     index_closed = 0
     for closed_state in closedStates:
         if closed_state == state:
@@ -262,8 +268,7 @@ def check_inclusive(state):
             break
         index_closed += 1
 
-    if in_closed == 1 and in_open == 1:
-        print("Why")
+    # Sets the flag
     if in_open == 0 and in_closed == 0:
         ret[0] = 1
     elif in_open == 1 and in_closed == 0:
@@ -273,12 +278,16 @@ def check_inclusive(state):
     return ret
 
 
+# Performs the heuristic test
 def state_walk():
     global current
     closedStates.append(current)
     openStates.remove(current)
+
+    # Sets walk state to the current board til seq
     walk_state = current.getBoard().getTile_seq()[:]
 
+    # Gets the location of the 0 tile
     row = current.getBoard().getRow()
     col = current.getBoard().getColumn()
 
@@ -314,11 +323,10 @@ def state_walk():
         flag = check_inclusive(temp)
         evaluate_child(flag, temp)
 
+    # Sorts the open states and iterates to the current value
     openStates.sort(key=cmp_to_key(compare))
     current = openStates[0]
 
-
-# TODO Add heuristic test
 
 epp = EightPuzzlePrint()
 epp.run()
