@@ -8,7 +8,12 @@ import time
 from copy import copy, deepcopy
 
 default_init = [[2, 3, 6], [1, 4, 8], [7, 5, 0]]
+<<<<<<< HEAD
 # default_init = [[1, 2, 3], [5, 6, 0], [7, 8, 4]]
+=======
+#default_init = [[1, 2, 3], [5, 6, 0], [7, 8, 4]]
+#default_init = [[2, 1, 3], [5, 4, 0], [7, 8, 6]]
+>>>>>>> a9b6a743cb7c7ac17e39c8b9cab77b09e4801230
 default_goal = [[1, 2, 3], [5, 8, 6], [0, 7, 4]]
 current = State([[2, 3, 6], [1, 0, 8], [7, 5, 4]])
 depth = 0
@@ -170,48 +175,68 @@ def heuristic_test(state):
 
     #    // (3) 2 x the number of direct tile reversals
 
-    cfound = 0
-    gfound = 0
-    cnewfound = 0
-    gnewfound = 0
     reversals = 0
-    for z in range(1, 9):
+    for y in range(0, len(currentboard)):
         for x in range(0, len(currentboard)):
-            for y in range(0, len(currentboard)):
-                if currentboard[x][y] == z:
-                    ccol = y
-                    crow = x
-                    cfound = 1
-                if goalboard[x][y] == z:
-                    gcol = y
-                    grow = x
-                    gfound = 1
+            if x == 2 and y != 2:
+                if currentboard[x][y] == default_goal[x][y + 1] and currentboard[x][y] != 0:
+                    if currentboard[x][y + 1] == default_goal[x][y]:
+                        reversals = reversals + 1
+            elif y == 2 and x != 2:
+                if currentboard[x][y] == default_goal[x + 1][y] and currentboard[x][y] != 0:
+                    if currentboard[x + 1][y] == default_goal[x][y]:
+                        reversals = reversals + 1
+            # In this situation if x != 2, and y != 2
+            elif y != 2 and x != 2:
+                if currentboard[x][y] == default_goal[x + 1][y] and currentboard[x][y] != 0:
+                    if currentboard[x + 1][y] == default_goal[x][y]:
+                        reversals = reversals + 1
+                if currentboard[x][y] == default_goal[x][y + 1] and currentboard[x][y] != 0:
+                    if currentboard[x][y + 1] == default_goal[x][y]:
+                        reversals = reversals + 1
 
-                if cfound == 1 and gfound == 1:
-                    cfound = 0
-                    gfound = 0
-                    cdiff = ccol - gcol
-                    rdiff = crow - grow
-                    if abs(cdiff + rdiff) == 1:
-                        findvalue = currentboard[grow][gcol]
-                        for a in range(0, len(currentboard)):
-                            for b in range(0, len(currentboard)):
-                                if currentboard[a][b] == findvalue:
-                                    cnewcol = b
-                                    cnewrow = a
-                                    cnewfound = 1
-                                if goalboard[a][b] == findvalue:
-                                    gnewcol = b
-                                    gnewrow = a
-                                    gnewfound = 1
+    #cfound = 0
+    #gfound = 0
+    #cnewfound = 0
+    #gnewfound = 0
+    #reversals = 0
+    #for z in range(1, 9):
+    #    for x in range(0, len(currentboard)):
+    #        for y in range(0, len(currentboard)):
+    #            if currentboard[x][y] == z:
+    #                ccol = y
+    #                crow = x
+    #                cfound = 1
+    #            if goalboard[x][y] == z:
+    #                gcol = y
+    #                grow = x
+    #                gfound = 1
+    #
+    #            if cfound == 1 and gfound == 1:
+    #                cfound = 0
+    #                gfound = 0
+    #                cdiff = ccol - gcol
+    #                rdiff = crow - grow
+    #                if abs(cdiff + rdiff) == 1:
+    #                    findvalue = currentboard[grow][gcol]
+    #                    for a in range(0, len(currentboard)):
+    #                        for b in range(0, len(currentboard)):
+    #                            if currentboard[a][b] == findvalue:
+    #                                cnewcol = b
+    #                                cnewrow = a
+    #                                cnewfound = 1
+    #                            if goalboard[a][b] == findvalue:
+    #                                gnewcol = b
+    #                                gnewrow = a
+    #                                gnewfound = 1
 
-                                if cnewfound == 1 and gnewfound == 1:
-                                    cnewfound = 0
-                                    gnewfound = 0
-                                    cnewdiff = abs(cnewcol - gnewcol)
-                                    rnewdiff = abs(cnewrow - gnewrow)
-                                    if cnewdiff + rnewdiff == 1 and ccol == gnewcol and crow == gnewrow:
-                                        reversals = reversals + 1
+    #                            if cnewfound == 1 and gnewfound == 1:
+    #                                cnewfound = 0
+    #                                gnewfound = 0
+    #                                cnewdiff = abs(cnewcol - gnewcol)
+    #                                rnewdiff = abs(cnewrow - gnewrow)
+    #                                if cnewdiff + rnewdiff == 1 and ccol == gnewcol and crow == gnewrow:
+    #                                    reversals = reversals + 1
 
     h3 = reversals * 2
 
