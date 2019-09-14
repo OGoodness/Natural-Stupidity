@@ -39,12 +39,12 @@ class EightPuzzlePrint:
         time_stamp_breadth_start = time.time()*1000.0
         breadth_search_start(self)
         time_stamp_breadth_end = time.time()*1000.0
-        print("The total time for breadth first search is: " + str(time_stamp_breadth_end-time_stamp_breadth_start) + "\n\n")
+        print("The total time for breadth first search in (millisecond) is: " + str(time_stamp_breadth_end-time_stamp_breadth_start) + "\n\n")
 
         time_stamp_heuristic_start = time.time()*1000.0
         heuristic_search_start(self)
         time_stamp_heuristic_end = time.time()*1000.0
-        print("The total time for heuristic first search is: " + str(time_stamp_heuristic_end-time_stamp_heuristic_start))
+        print("The total time for heuristic first search in (milisecond) is: " + str(time_stamp_heuristic_end-time_stamp_heuristic_start))
 
 
 def breadth_search_start(self):
