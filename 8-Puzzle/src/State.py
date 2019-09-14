@@ -1,39 +1,69 @@
+from Board import Board
+
+
 class State:
-    tile_seq = [[]];
-    depth = 0;
-    weight = 0;
+    board = None
+    depth = 0
+    weight = 0
+    parent = None
 
-    def __init__(self, tile_seq, depth, weight):
-        super();
-        self.tile_seq = tile_seq;
-        self.depth = depth;
-        self.weight = weight;
+    def __init__(self, board, depth=0, weight=0):
+        super()
+        self.board = Board(board)
+        self.depth = depth
+        self.weight = weight
+        self.path = [self]
 
-    def getWeight(self):
-        return self.weight;
+    def get_weight(self):
+        return self.weight
 
-    def gettile_seq(self):
-        return self.tile_seq;
+    def get_path(self):
+        return self.path
 
-    def getDepth(self):
-        return self.depth;
+    def get_depth(self):
+        return self.depth
 
-    def settile_seq(self, tile_seq):
-        self.tile_seq = tile_seq;
+    def get_parent(self):
+        return self.parent
 
-    def setDepth(self, depth):
-        self.depth = depth;
+    def get_board(self):
+        return self.board
 
-    def setWeight(self, weight):
-        self.weight = weight;
+    def set_board(self, board):
+        self.board = board
 
-    def equals(self):
-        op = self.gettile_seq();
+    def set_parent(self, state):
+        self.parent = state
 
-        for i in len(op):
-            for j in len(op[i]):
-                if self.tile_seq[i][j] != op[i][j]:
-                    return False;
-        return True;
+    def set_depth(self, depth):
+        self.depth = depth
 
+    def set_weight(self, weight):
+        self.weight = weight
 
+    # TODO: make print path function work. I may not be setting path correctly
+    def printPath(self):
+        path_array = [self]
+        current = self
+        while True:
+            parent = current.get_parent()
+            if not isinstance(parent, State):
+                break
+            path_array.append(parent)
+            current = parent
+
+        for i, state in reversed(list(enumerate(path_array))):
+            state.print()
+            print()
+
+    def __eq__(self, other):
+        return self.get_board().get_tile_seq() == other.get_board().get_tile_seq()
+
+    def __ne__(self, other):
+        return self.get_board().get_tile_seq() != other.get_board().get_tile_seq()
+
+    def print(self):
+        for i in self.get_board().get_tile_seq():
+            for j in i:
+                print(str(j) + " ", end=" ")
+            print()
