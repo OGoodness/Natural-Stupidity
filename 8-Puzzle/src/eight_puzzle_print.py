@@ -7,9 +7,9 @@ from State import State
 import time
 from copy import copy, deepcopy
 
-default_init = [[2, 3, 6], [1, 4, 8], [7, 5, 0]]
-#default_init = [[5, 1, 3], [2, 6, 8], [0, 4, 7]]
-default_goal = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
+# default_init = [[2, 3, 6], [1, 4, 8], [7, 5, 0]]
+default_init = [[1, 2, 3], [5, 6, 0], [7, 8, 4]]
+default_goal = [[1, 2, 3], [5, 8, 6], [0, 7, 4]]
 current = State([[2, 3, 6], [1, 0, 8], [7, 5, 4]])
 depth = 0
 tiles = 8
@@ -33,24 +33,28 @@ class EightPuzzlePrint:
         # Try code thread thing
 
     def run(self):
+        global current
         print("Start State: \n")
         path = 0
+        current_holder = current
         current.print()
 
         print("Goal State: \n")
-        #self.goal.print()
+        self.goal.print()
 
-        # breadth_search(current, self.goal, 0)
+        breadth_search(current, self.goal, 0)
 
-        # openStates.clear()
-        # closedStates.clear()
-        #
+        openStates.clear()
+        closedStates.clear()
+
+        current = current_holder
+
         openStates.append(current)
         while current != self.goal:
             state_walk()
-            #print()
+            # print()
             path += 1
-            #current.print()
+            # current.print()
             if len(openStates) % 500 == 0:
                 print(len(openStates))
                 print(str(len(closedStates)) + "\n")
@@ -58,6 +62,7 @@ class EightPuzzlePrint:
                 print(len(openStates))
                 print(str(len(closedStates)) + "\n")
 
+        print(current.print())
         print("It took path " + str(path) + " Iterations")
         print("The length of the path is: " + str(current.getDepth()))
 
@@ -149,15 +154,16 @@ def heuristic_test(state):
     # / (2) Sum of distances out of place
     # // TODO your code start here
     diff = 0
-    for a in range(0, 9):
-        for x in range(0, len(currentboard)):
-            for y in range(0, len(currentboard)):
-                if currentboard[x][y] == a:
-                    ccol = y
-                    crow = x
-                if goalboard[x][y] == a:
-                    gcol = y
-                    grow = x
+    for i in range(0, len(goalboard)):
+        for j in range(0, len(goalboard)):
+            gcol = i
+            grow = j
+            for x in range(0, len(currentboard)):
+                for y in range(0, len(currentboard)):
+                    if currentboard[x][y] == goalboard[i][j]:
+                        ccol = y
+                        crow = x
+
 
         cdiff = ccol - gcol
         rdiff = crow - grow
@@ -248,7 +254,6 @@ def check_inclusive(state):
             break
         index_open += 1
 
-
     index_closed = 0
     for closed_state in closedStates:
         if closed_state == state:
@@ -256,7 +261,6 @@ def check_inclusive(state):
             ret[1] = index_closed
             break
         index_closed += 1
-
 
     if in_closed == 1 and in_open == 1:
         print("Why")
@@ -278,10 +282,9 @@ def state_walk():
     row = current.getBoard().getRow()
     col = current.getBoard().getColumn()
 
-
     # Item Moving Up
     if row - 1 >= 0:
-        #print("up")
+        # print("up")
         temp = State(swapPositions(walk_state, row, col, row - 1, col))
         temp.setDepth(current.getDepth() + 1)
         flag = check_inclusive(temp)
@@ -289,7 +292,7 @@ def state_walk():
 
     # Item Moving Down
     if row + 1 < len(walk_state):
-        #print("down")
+        # print("down")
         temp = State(swapPositions(walk_state, row, col, row + 1, col))
         temp.setDepth(current.getDepth() + 1)
         flag = check_inclusive(temp)
@@ -297,7 +300,7 @@ def state_walk():
 
     # Item Moving Left
     if col - 1 >= 0:
-        #print("left")
+        # print("left")
         temp = State(swapPositions(walk_state, row, col, row, col - 1))
         temp.setDepth(current.getDepth() + 1)
         flag = check_inclusive(temp)
@@ -305,7 +308,7 @@ def state_walk():
 
     # Item Moving Right
     if col + 1 < len(walk_state[0]):
-        #print("Right")
+        # print("Right")
         temp = State(swapPositions(walk_state, row, col, row, col + 1))
         temp.setDepth(current.getDepth() + 1)
         flag = check_inclusive(temp)
