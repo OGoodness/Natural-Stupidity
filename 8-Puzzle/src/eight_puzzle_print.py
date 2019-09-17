@@ -334,16 +334,18 @@ def compare(a1, a2):
 
 
 test_boards = []
-# 7 moves
-test_boards.append([[1, 0, 5], [4, 3, 2], [7, 8, 6]])
-# 5 moves
-test_boards.append([[1, 5, 2], [4, 8, 3], [7, 0, 6]])
-
-# 10 moves
-test_boards.append([[1, 6, 0], [5, 3, 2], [4, 7, 8]])
-
-# 9 moves
-test_boards.append([[1, 6, 2], [4, 3, 8], [7, 0, 5]])
+# # 7 moves
+# test_boards.append([[1, 0, 5], [4, 3, 2], [7, 8, 6]])
+# # 5 moves
+# test_boards.append([[1, 5, 2], [4, 8, 3], [7, 0, 6]])
+#
+# # 10 moves
+# test_boards.append([[1, 6, 0], [5, 3, 2], [4, 7, 8]])
+#
+# # 9 moves
+# test_boards.append([[1, 6, 2], [4, 3, 8], [7, 0, 5]])
+test_boards.append([[2, 3, 1], [0, 4, 6], [7, 5, 8]])
+test_boards.append(([[2, 3, 6], [1, 4, 8], [7, 5, 0]]))
 
 #Goal
 goal_boards = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
