@@ -113,12 +113,6 @@ def heuristic_search_start(self):
     while current != goal:
         state_walk(open_states, closed_states, current)
         path += 1
-        if len(open_states) % 500 == 0:
-            print(len(open_states))
-            print(str(len(closed_states)) + "\n")
-        if len(closed_states) % 500 == 0:
-            print(len(open_states))
-            print(str(len(closed_states)) + "\n")
         current = open_states[0]
     current.print()
     print("It took path " + str(path) + " Iterations")
