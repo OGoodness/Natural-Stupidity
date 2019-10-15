@@ -2,8 +2,8 @@ import os
 import numpy as np
 from collections import Counter
 from sklearn.naive_bayes import MultinomialNB, GaussianNB, BernoulliNB
-from sklearn.svm import SVC, NuSVC, LinearSVC
 from sklearn.metrics import confusion_matrix
+
 
 # Create a dictionary of words with its frequency
 def make_Dictionary(train_dir):
@@ -31,7 +31,7 @@ def make_Dictionary(train_dir):
 
 def extract_features(mail_dir):
     files = [os.path.join(mail_dir,fi) for fi in os.listdir(mail_dir)]
-    features_matrix = np.zeros((len(files),3000))
+    features_matrix = np.ones((len(files),3000))
     docID = 0;
     for fil in files:
       with open(fil) as fi:
@@ -51,26 +51,37 @@ def extract_features(mail_dir):
 train_dir = 'train-mails'
 dictionary = make_Dictionary(train_dir)
 
+print(dictionary)
+
 # Prepare feature vectors per training mail and its labels
 
 
-train_labels = np.zeros(702)
-train_labels[351:701] = 1
+class_identifier = np.zeros(702)
+class_identifier[351:702] = 1
 train_matrix = extract_features(train_dir)
 
-# Training SVM and Naive bayes classifier
 
-model1 = MultinomialNB()
-model2 = LinearSVC()
-model1.fit(train_matrix, train_labels)
-model2.fit(train_matrix, train_labels)
+#total_num_occurance = np.sum(train_matrix, axis = 0)
+ham_num_occurance = np.sum(train_matrix[0:351], axis = 0)
+spam_num_occurance = np.sum(train_matrix[351:702], axis = 0)
+spam_frequency = np.log10(np.true_divide(spam_num_occurance, 351 + 3000))
+ham_frequency = np.true_divide(ham_num_occurance, 351 + 3000)
+print(ham_frequency)
+print(np.log10(ham_frequency))
+print(spam_frequency)
 
-# Test the unseen mails for Spam
-test_dir = 'test-mails'
-test_matrix = extract_features(test_dir)
-test_labels = np.zeros(260)
-test_labels[130:260] = 1
-result1 = model1.predict(test_matrix)
-result2 = model2.predict(test_matrix)
-print(confusion_matrix(test_labels, result1))
-print(confusion_matrix(test_labels, result2))
+# # Training Naive bayes classifier
+#
+# model1 = MultinomialNB()
+# model1.fit(train_matrix, class_identifier)
+# # model2.fit(train_matrix, class_identifier)
+#
+# # Test the unseen mails for Spam
+# test_dir = 'test-mails'
+# test_matrix = extract_features(test_dir)
+# test_labels = np.zeros(260)
+# test_labels[130:260] = 1
+# result1 = model1.predict(test_matrix)
+# # result2 = model2.predict(test_matrix)
+# print(confusion_matrix(test_labels, result1))
+# # print(confusion_matrix(test_labels, result2))
