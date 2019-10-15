@@ -24,15 +24,15 @@ def make_Dictionary(train_dir):
         # el
         if len(item) == 1:
             del dictionary[item]
-    dictionary = dictionary.most_common(3000)
+    dictionary = dictionary.most_common(100)
     # Paste code for non-word removal here(code snippet is given below)
     return dictionary
 
 
 def extract_features(mail_dir):
     files = [os.path.join(mail_dir,fi) for fi in os.listdir(mail_dir)]
-    features_matrix = np.ones((len(files),3000))
-    docID = 0;
+    features_matrix = np.ones((len(files),100))
+    docID = 0
     for fil in files:
       with open(fil) as fi:
         for i,line in enumerate(fi):
@@ -51,7 +51,6 @@ def extract_features(mail_dir):
 train_dir = 'train-mails'
 dictionary = make_Dictionary(train_dir)
 
-print(dictionary)
 
 # Prepare feature vectors per training mail and its labels
 
@@ -64,11 +63,21 @@ train_matrix = extract_features(train_dir)
 #total_num_occurance = np.sum(train_matrix, axis = 0)
 ham_num_occurance = np.sum(train_matrix[0:351], axis = 0)
 spam_num_occurance = np.sum(train_matrix[351:702], axis = 0)
-spam_frequency = np.log10(np.true_divide(spam_num_occurance, 351 + 3000))
-ham_frequency = np.true_divide(ham_num_occurance, 351 + 3000)
+process = lambda x: np.log(x/(451))
+spam_frequency = process(spam_num_occurance)
+ham_frequency = process(ham_num_occurance)
+
+spam_dictionary = {}
+ham_dictionary = {}
+
+for iter, freq in enumerate(dictionary):
+    spam_dictionary[freq[0]] = spam_frequency[iter]
+    ham_dictionary[freq[0]] = ham_frequency[iter]
+
 print(ham_frequency)
-print(np.log10(ham_frequency))
+print(ham_dictionary)
 print(spam_frequency)
+print(spam_dictionary)
 
 # # Training Naive bayes classifier
 #
