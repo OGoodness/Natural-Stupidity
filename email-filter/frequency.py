@@ -13,6 +13,7 @@ def make_Dictionary(train_dir):
     for mail in emails:
         with open(mail) as m:
             for i, line in enumerate(m):
+                if i == 2:
                     words = line.split()
                     all_words += words
 
@@ -36,12 +37,13 @@ def extract_features(mail_dir):
       with open(fil) as fi:
         for i,line in enumerate(fi):
             words = line.split()
-            for word in words:
-              wordID = 0
-              for i,d in enumerate(dictionary):
-                if d[0] == word:
-                  wordID = i
-                  features_matrix[docID,wordID] = words.count(word)
+            if i == 2:
+                for word in words:
+                  wordID = 0
+                  for i,d in enumerate(dictionary):
+                    if d[0] == word:
+                      wordID = i
+                      features_matrix[docID,wordID] = words.count(word)
         docID = docID + 1
     return features_matrix
 
@@ -56,9 +58,9 @@ def test_data(test_dir, spam_count, ham_count, spam_dict, ham_dict):
             for i, line in enumerate(fi):
                 words = line.split()
                 for word in words:
-                    if word in spam_dict:
-                        spam = spam + spam_dict[word] * test[word] + np.log(1.0 / 2.0)
-                        ham = ham + ham_dict[word] * test[word] + np.log(1.0 / 2.0)
+                    if word in spam_dict and word in train_matrix:
+                        spam = spam + spam_dict[word] * train_matrix[word] + np.log(1.0 / 2.0)
+                        ham = ham + ham_dict[word] * train_matrix[word] + np.log(1.0 / 2.0)
                     else:
                         spam = spam + (1/(351 + 3000)) + np.log(1.0 / 2.0)
                         ham = ham + (1/(351 + 3000)) + np.log(1.0 / 2.0)
@@ -73,7 +75,7 @@ SIZE = 3000
 train_dir = 'train-mails'
 small_test = 'small-test'
 test_mails = 'test-mails'
-dictionary = make_Dictionary(small_test)
+dictionary = make_Dictionary(train_dir)
 test = dict(dictionary)
 
 # Prepare feature vectors per training mail and its labels
@@ -117,7 +119,7 @@ for value in is_spam:
 print(spam)
 print(ham)
 print("Accuracy: " + str((260-abs(spam-ham))/260))
-
+print(is_spam.count)
 
 
 
