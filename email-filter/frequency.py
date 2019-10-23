@@ -1,127 +1,98 @@
-import os
-import numpy as np
+import math
+from os import listdir
+from collections import defaultdict, OrderedDict
+import re
 from collections import Counter
-from sklearn.naive_bayes import MultinomialNB, GaussianNB, BernoulliNB
-from sklearn.metrics import confusion_matrix
+
+# get list of all training mail files
+spam_dictionary = defaultdict(int)
+global_dictionary = defaultdict(int)
+ham_dictionary = defaultdict(int)
+feature_matrix = {}
+train_spam_count = 0
+train_ham_count = 0
+train_dir = 'train-mails/'
+files = listdir(train_dir)
+
+#This deals with 3 dictionaries.
+#   Global dictionary: Global dictionary to keep track of all words
+#   Regular dictionary: Dictionary passed in that needs to get added to (spam/ham)
+#   Email dictionary: Returned so it can be added to dictionary of files
+def emailDictionary(email, dictionary):
+    email_dictionary = defaultdict(int)
+    for line in email:
+        for word in line.split():
+            if word.isalpha() is True and len(word) >= 4:
+                email_dictionary[word] +=1
+                dictionary[word] += 1
+                global_dictionary[word] +=1
+    return email_dictionary
 
 
-# Create a dictionary of words with its frequency
-def make_Dictionary(train_dir):
-    emails = [os.path.join(train_dir, f) for f in os.listdir(train_dir)]
-    all_words = []
-    for mail in emails:
-        with open(mail) as m:
-            for i, line in enumerate(m):
-                if i == 2:  # Body of email is only 3rd line of text file
-                    words = line.split()
-                    all_words += words
 
-    dictionary = Counter(all_words)
-    list_to_remove = list(dictionary)
-    for item in list_to_remove:
-        # if item.isalpha() == False:
-        #     del dictionary[item]
-        # el
-        if len(item) == 1:
-            del dictionary[item]
-    dictionary = dictionary.most_common(100)
-    # Paste code for non-word removal here(code snippet is given below)
-    return dictionary
+#Builds dictionary for spam and ham seperately. While at the same time making the feature matrix
+for file in files:
+    email_name = train_dir + file
+    # open file
+    with open(email_name, 'r') as email:
+        #Check if current file is Spam/Ham
+        if 'spm' in file:
+            # Track # of Spam files
+            train_spam_count +=1
+            feature_matrix.update(({file: emailDictionary(email, spam_dictionary)}))
+        else:
+            #Track # of Ham files
+            train_ham_count +=1
+            feature_matrix.update(({file: emailDictionary(email, ham_dictionary)}))
 
+#Sort the dictionary and then get top 3000 words (returns list)
+sorted_spam =sorted(spam_dictionary.items(), key=lambda item: item[1], reverse=True)[:3000]
+sorted_ham = sorted(ham_dictionary.items(), key=lambda item: item[1], reverse=True)[:3000]
 
-def extract_features(mail_dir):
-    files = [os.path.join(mail_dir, fi) for fi in os.listdir(mail_dir)]
-    features_matrix = np.ones((len(files), 100))
-    docID = 0
-    for fil in files:
-        with open(fil) as fi:
-            for i, line in enumerate(fi):
-                if i == 2:
-                    words = line.split()
-                    for word in words:
-                        wordID = 0
-                        for i, d in enumerate(dictionary):
-                            if d[0] == word:
-                                wordID = i
-                                features_matrix[docID, wordID] = words.count(word)
-            docID = docID + 1
-    return features_matrix
-
-
-def test_data(test_dir, spam_count, ham_count, spam_dict, ham_dict):
-    files = [os.path.join(test_dir, fi) for fi in os.listdir(test_dir)]
-    file_index = 0
-    is_spam = []
-    spam = 0
-    ham = 0
-    for fil in files:
-        with open(fil) as fi:
-            for i, line in enumerate(fi):
-                words = line.split()
-                for word in words:
-                    if word in spam_dict:
-                        spam = spam + spam_dict[word] * words.count(word) + 1.0 / 2.0
-                        ham = ham + ham_dict[word] * words.count(word) + 1.0 / 2.0
-                    else:
-                        spam = spam + 1.0 / 2.0
-                        ham = ham + 1.0 / 2.0
-            if spam > ham:
-                is_spam += [True]
-            file_index += 1
-    return is_spam
-
-
-train_dir = 'train-mails'
-test_dir = 'test-mails'
-dictionary = make_Dictionary(train_dir)
-
-# Prepare feature vectors per training mail and its labels
-
-
-class_identifier = np.zeros(702)
-class_identifier[351:702] = 1
-train_matrix = extract_features(train_dir)
-
-# total_num_occurance = np.sum(train_matrix, axis = 0)
-ham_num_occurance = np.sum(train_matrix[0:351], axis=0)
-spam_num_occurance = np.sum(train_matrix[351:702], axis=0)
-process = lambda x: np.log(x / (451))
-spam_frequency = process(spam_num_occurance)
-ham_frequency = process(ham_num_occurance)
-
-spam_dictionary = {}
-ham_dictionary = {}
-
-for iter, freq in enumerate(dictionary):
-    spam_dictionary[freq[0]] = spam_frequency[iter]
-    ham_dictionary[freq[0]] = ham_frequency[iter]
-
-spam_count = {}
-ham_count = {}
-for iter, freq in enumerate(dictionary):
-    spam_count[freq[0]] = spam_num_occurance[iter]
-    ham_count[freq[0]] = ham_num_occurance[iter]
-
-print(ham_frequency)
-print(ham_dictionary)
-print(spam_frequency)
+#Reinitialize dictionary to clear values
+ham_dictionary, spam_dictionary = {}, {}
+#Turn list into dictionary
+for item in sorted_ham:
+    ham_dictionary.update({item[0]: item[1]})
+for item in sorted_spam:
+    spam_dictionary.update({item[0]: item[1]})
 print(spam_dictionary)
 
-is_spam = test_data(test_dir, spam_count, ham_count, spam_dictionary, ham_dictionary)
 
-print("test")
-# # Training Naive bayes classifier
-#
-# model1 = MultinomialNB()
-# model1.fit(train_matrix, class_identifier)
-# # model2.fit(train_matrix, class_identifier)
-#
-# # Test the unseen mails for Spam
-# test_dir = 'test-mails'
-# test_matrix = extract_features(test_dir)
-# test_labels = np.zeros(260)
-# test_labels[130:260] = 1
-# result1 = model1.predict(test_matrix)
-# # result2 = model2.predict(test_matrix)
-# print(confusion_matrix(test_labels, result1))
-# # print(confusion_matrix(test_labels, result2))
+print(feature_matrix)
+
+
+spam_decision = {}
+#Final Result Variables
+total_spam = 0
+total_ham = 0
+a = 1
+for file in files:
+    ham = 0
+    spam = 0
+    with open(train_dir + file, 'r') as email:
+        for line in email:
+            for word in line.split():
+                if word.isalpha() is True and len(word) >= 4:
+
+                    feature_count = 0 if feature_matrix.get(file).get(word) is None else feature_matrix.get(file).get(word)
+                    ham_count = ham_dictionary.get(word) if ham_dictionary.get(word) is not None else 0
+                    spam_count = spam_dictionary.get(word) if spam_dictionary.get(word) is not None else 0
+
+                    p_of_evidience_given_spam = (spam_count + a) / (train_spam_count + feature_count * a)
+                    p_of_features_in_spam = train_spam_count / (train_spam_count + train_ham_count)
+                    spam += math.log(p_of_evidience_given_spam + a, math.e) * (feature_count + a) + math.log(p_of_features_in_spam + a, math.e)
+
+                    p_of_evidience_given_ham = (ham_count + a) / (train_ham_count + feature_count * a)
+                    p_of_features_in_ham = train_ham_count / (train_spam_count + train_ham_count)
+                    ham += math.log(p_of_evidience_given_ham + a, math.e) * (feature_count + a) + math.log(p_of_features_in_ham + a, math.e)
+
+    if(spam > ham):
+        spam_decision.update({file: 'spam' + str(spam)})
+        total_spam +=1
+    else:
+        spam_decision.update({file: 'ham' + str(ham)})
+        total_ham +=1
+
+
+print("Spam: " + str(total_spam) + " Ham: " + str(total_ham))
