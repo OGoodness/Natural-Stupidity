@@ -43,7 +43,7 @@ def extract_features(mail_dir):
                   for i,d in enumerate(dictionary):
                     if d[0] == word:
                       wordID = i
-                      features_matrix[docID,wordID] = words.count(word)
+                      features_matrix[docID,wordID] = words.count(word) + 1
         docID = docID + 1
     return features_matrix
 
@@ -56,14 +56,15 @@ def test_data(test_dir, spam_count, ham_count, spam_dict, ham_dict):
     for fil in files:
         with open(fil) as fi:
             for i, line in enumerate(fi):
-                words = line.split()
-                for word in words:
-                    if word in spam_dict and word in train_matrix:
-                        spam = spam + spam_dict[word] * train_matrix[word] + np.log(1.0 / 2.0)
-                        ham = ham + ham_dict[word] * train_matrix[word] + np.log(1.0 / 2.0)
-                    else:
-                        spam = spam + (1/(351 + 3000)) + np.log(1.0 / 2.0)
-                        ham = ham + (1/(351 + 3000)) + np.log(1.0 / 2.0)
+                if i == 2:
+                    words = line.split()
+                    for word in words:
+                        if word in spam_dict and word in test:
+                            spam = spam + spam_dict[word] * test[word] + np.log(1.0 / 2.0)
+                            ham = ham + ham_dict[word] * test[word] + np.log(1.0 / 2.0)
+                        else:
+                            spam = spam + np.log(1/((SAMPLESIZE/2) + SIZE)) + np.log(1.0 / 2.0)
+                            ham = ham + np.log(1/((SAMPLESIZE/2) + SIZE)) + np.log(1.0 / 2.0)
             if spam > ham:
                 is_spam += [True]
             else:
@@ -71,7 +72,9 @@ def test_data(test_dir, spam_count, ham_count, spam_dict, ham_dict):
             file_index += 1
     return is_spam
 
-SIZE = 3000
+SAMPLESIZE = 704  # Number of samples provided eg 100, or 704
+SIZE = 3000  # The number of words in dictionary eg 100 or 3000
+TESTCOUNT = 260  # The number of emails tested
 train_dir = 'train-mails'
 small_test = 'small-test'
 test_mails = 'test-mails'
@@ -80,16 +83,13 @@ test = dict(dictionary)
 
 # Prepare feature vectors per training mail and its labels
 
-
-class_identifier = np.zeros(SIZE)
-class_identifier[352:702] = 1
 train_matrix = extract_features(train_dir)
 
 
 #total_num_occurance = np.sum(train_matrix, axis = 0)
-ham_num_occurance = np.sum(train_matrix[0:351], axis = 0)
-spam_num_occurance = np.sum(train_matrix[352:702], axis = 0)
-process = lambda x: np.log((x/(351 + 3000)))
+ham_num_occurance = np.sum(train_matrix[0:352], axis = 0)
+spam_num_occurance = np.sum(train_matrix[353:704], axis = 0)
+process = lambda x: np.log(x/352 + 3000)
 spam_frequency = process(spam_num_occurance)
 ham_frequency = process(ham_num_occurance)
 
@@ -118,7 +118,7 @@ for value in is_spam:
 
 print(spam)
 print(ham)
-print("Accuracy: " + str((260-abs(spam-ham))/260))
+print("Accuracy: " + str((TESTCOUNT-abs(spam-ham))/260))
 print(is_spam.count)
 
 
