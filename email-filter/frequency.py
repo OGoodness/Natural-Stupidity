@@ -96,4 +96,4 @@ for file in files:
 
 
 print("Spam: " + str(total_spam) + " Ham: " + str(total_ham))
-print("Spam: " + str(total_spam / (total_spam+total_ham)) + " Ham: " + str(total_ham / (total_spam+total_ham)))
+print("Spam: " + str((total_spam+total_ham)/2 /total_spam ) + " Ham: " + str(total_ham / ((total_ham + total_spam)/2)))
