@@ -22,7 +22,7 @@ def emailDictionary(email, dictionary):
     email_dictionary = defaultdict(int)
     for line in email:
         for word in line.split():
-            if word.isalpha() is True and len(word) >= 4:
+            if word.isalpha() is True and len(word) >= 5:
                 email_dictionary[word] +=1
                 dictionary[word] += 1
                 global_dictionary[word] +=1
@@ -96,3 +96,4 @@ for file in files:
 
 
 print("Spam: " + str(total_spam) + " Ham: " + str(total_ham))
+print("Spam: " + str(total_spam / (total_spam+total_ham)) + " Ham: " + str(total_ham / (total_spam+total_ham)))
