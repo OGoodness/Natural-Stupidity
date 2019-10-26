@@ -431,8 +431,10 @@ public class email_filter {
 			for (int j = 0; j < features[i].length; j++)
 			{
 
-				hamProb	 += features[i][j] * feature_log_prob[0][j];
-				spamProb += features[i][j] * feature_log_prob[1][j];
+				hamProb	 += Math.log(feature_log_prob[0][j])*(double)features[i][j] +
+		          Math.log(1-feature_log_prob[0][j])*Math.abs(1-features[i][j]);
+				spamProb += Math.log(feature_log_prob[1][j])*(double)features[i][j] +
+						Math.log(1-feature_log_prob[1][j])*Math.abs(1-features[i][j]);
 
 			}
 			hamProb += class_log_prior[0];
