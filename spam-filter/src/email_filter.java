@@ -180,20 +180,20 @@ public class email_filter {
 		 * class_log_prior[0] = Math.log(ham)
 		 * class_log_prior[1] = Math.log(spam)
 		 */
-		int ham = 0;
-		int spam = 0;
+		int hamLabels = 0;
+		int spamLabels = 0;
 
 		for (int label:
 			 labels) {
 			if(label == 0)
-				spam++;
+				spamLabels++;
 			else
-				ham++;
+				hamLabels++;
 
 		}
 
-		class_log_prior[0] = Math.log(ham);
-		class_log_prior[1] = Math.log(spam);
+		class_log_prior[0] = Math.log(hamLabels);
+		class_log_prior[1] = Math.log(spamLabels);
 
 		//calculate feature_log_prob
 		/**
@@ -214,12 +214,43 @@ public class email_filter {
 		 *     feature_log_prob[1] = Math.log(spam[i]/sum of spam)
 		 */
 
+		double[] ham = new double[most_common];
+		double[] spam = new double[most_common];
+
+		double hamSum = 0;
+		double spamSum = 0;
+
+
 		for (int row = 0; row < features.length; row++)
 		{
 			for (int col = 0; col < most_common; col++)
 			{
-				ham[col]
+				if(labels[row] == 1)
+				{
+					ham[col] += features[row][col];
+					hamSum += features[row][col];
+				}
+				else
+				{
+					spam[col] += features[row][col];
+					spamSum += features[row][col];
+				}
 			}
+		}
+
+		for (int i = 0; i < most_common; i++)
+		{
+			ham[i] += smooth_alpha;
+			spam[i] += smooth_alpha;
+		}
+
+		hamSum += most_common*smooth_alpha;
+		spamSum += most_common*smooth_alpha;
+
+		for (int j = 0; j < most_common; j++)
+		{
+			feature_log_prob[0][j] = Math.log(ham[j]/hamSum);
+			feature_log_prob[1][j] = Math.log(spam[j]/spamSum);
 		}
 	}
 	
