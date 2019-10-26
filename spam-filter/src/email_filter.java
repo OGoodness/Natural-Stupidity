@@ -305,6 +305,15 @@ public class email_filter {
 		 * loop over features with i and j
 		 * features[i][j] > 0 ? 1 : 0;
 		 */
+
+        for(int i = 0; i < features.length; i++) {
+            for(int j = 0; j < features[i].length; j++) {
+                if(features[i][j] > 0)
+                    features[i][j] = 1;
+                else
+                    features[i][j] = 0;
+            }
+        }
 		//calculate class_log_prior
 		/**
 		 * loop over labels
@@ -313,6 +322,21 @@ public class email_filter {
 		 * class_log_prior[0] = Math.log(ham)
 		 * class_log_prior[1] = Math.log(spam)
 		 */
+
+
+        int hamLabels = 0;
+        int spamLabels = 0;
+
+        for (int label:
+                labels) {
+            if(label == 0)
+                spamLabels++;
+            else
+                hamLabels++;
+
+        }
+        class_log_prior[0] = Math.log(hamLabels);
+        class_log_prior[1] = Math.log(spamLabels);
 		//calculate feature_log_prob
 		/**
 		 * nested loop over features
@@ -329,6 +353,37 @@ public class email_filter {
 		 *     feature_log_prob[0] = ham[i]/sum of ham //no log here
 		 *     feature_log_prob[1] = spam[i]/sum of spam //no log here
 		 */
+        double[] ham = new double[most_common];
+        double [] spam = new double[most_common];
+
+        double hamSum = 0;
+        double spamSum = 0;
+	    for( int row = 0; row < features.length; row++) {
+	        for( int col = 0; col < most_common; col++){
+                if(labels[row] == 1){
+                    ham[col] += features[row][col];
+                    hamSum += features[row][col];
+                }
+                else{
+                    spam[col] += features[row][col];
+                    spamSum += features[row][col];
+                }
+            }
+        }
+
+	    hamSum += (hamLabels + (smooth_alpha*2));
+	    spamSum += (spamLabels + (smooth_alpha*2));
+
+	    for(int i = 0; i < most_common; i++) {
+	        ham[i] +=smooth_alpha;
+	        spam[i] += smooth_alpha;
+        }
+
+
+	    for(int j = 0; j < most_common; j++) {
+	        feature_log_prob[0][j] = ham[j]/hamSum;
+	        feature_log_prob[1][j] = spam[j]/spamSum;
+        }
 	}
 	
 	/**
@@ -342,6 +397,17 @@ public class email_filter {
 		 * loop over features with i and j
 		 * features[i][j] > 0 ? 1 : 0;
 		 */
+
+		for(int i = 0; i < features.length; i++)
+		{
+			for (int j = 0; j < features[i].length; j++)
+			{
+                if(features[i][j] > 0)
+                    features[i][j] = 1;
+                else
+                    features[i][j] = 0;
+			}
+		}
 
 		int[] classes = new int[features.length];
 		/**
@@ -365,12 +431,13 @@ public class email_filter {
 			for (int j = 0; j < features[i].length; j++)
 			{
 
-				hamProb	 += features[i][j] * features[1][j];
-				spamProb += features[i][j] * features[1][j];
+				hamProb	 += features[i][j] * feature_log_prob[0][j];
+				spamProb += features[i][j] * feature_log_prob[1][j];
+
 			}
 			hamProb += class_log_prior[0];
 			spamProb += class_log_prior[1];
-			if (Math.abs(spamProb) > Math.abs(hamProb))
+			if (spamProb > hamProb)
 				classes[i] = SPAM;
 			else
 				classes[i] = HAM;
