@@ -342,13 +342,7 @@ public class email_filter {
 		 * loop over features with i and j
 		 * features[i][j] > 0 ? 1 : 0;
 		 */
-		for(int i = 0; i < features.length; i++)
-		{
-			for (int j = 0; j < features[i].length; j++)
-			{
-				features[i][j] > 0 ? 1 : 0;
-			}
-		}
+
 		int[] classes = new int[features.length];
 		/**
 		 * nested loop over features with i and j
@@ -370,6 +364,7 @@ public class email_filter {
 
 			for (int j = 0; j < features[i].length; j++)
 			{
+
 				hamProb	 += features[i][j] * features[1][j];
 				spamProb += features[i][j] * features[1][j];
 			}
