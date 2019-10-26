@@ -342,11 +342,18 @@ public class email_filter {
 		 * loop over features with i and j
 		 * features[i][j] > 0 ? 1 : 0;
 		 */
+		for(int i = 0; i < features.length; i++)
+		{
+			for (int j = 0; j < features[i].length; j++)
+			{
+				features[i][j] > 0 ? 1 : 0;
+			}
+		}
 		int[] classes = new int[features.length];
-        /**
+		/**
 		 * nested loop over features with i and j
 		 * calculate ham_prob and spam_prob
-		 *     Math.log(feature_log_prob)*(double)features[i][j] + 
+		 *     Math.log(feature_log_prob)*(double)features[i][j] +
 		 *         Math.log(1-feature_log_prob)*Math.abs(1-features[i][j])
 		 * add ham_prob and spam_prob with class_log_prior
 		 * if ham_prob > spam_prob
@@ -355,7 +362,26 @@ public class email_filter {
 		 * return int[] classes
 		 */
 
+
+		for(int i = 0; i < features.length; i++)
+		{
+			double spamProb = 0;
+			double hamProb = 0;
+
+			for (int j = 0; j < features[i].length; j++)
+			{
+				hamProb	 += features[i][j] * features[1][j];
+				spamProb += features[i][j] * features[1][j];
+			}
+			hamProb += class_log_prior[0];
+			spamProb += class_log_prior[1];
+			if (Math.abs(spamProb) > Math.abs(hamProb))
+				classes[i] = SPAM;
+			else
+				classes[i] = HAM;
+		}
 		return classes;
+
 	}
 	
 	public void GaussianNB(int[][] features, int[] labels){
