@@ -309,9 +309,9 @@ public class email_filter {
         for(int i = 0; i < features.length; i++) {
             for(int j = 0; j < features[i].length; j++) {
                 if(features[i][j] > 0)
-                    features[i][j] = 0;
-                else
                     features[i][j] = 1;
+                else
+                    features[i][j] = 0;
             }
         }
 		//calculate class_log_prior
@@ -402,9 +402,9 @@ public class email_filter {
 			for (int j = 0; j < features[i].length; j++)
 			{
                 if(features[i][j] > 0)
-                    features[i][j] = 0;
-                else
                     features[i][j] = 1;
+                else
+                    features[i][j] = 0;
 			}
 		}
 		int[] classes = new int[features.length];
