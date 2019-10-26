@@ -270,6 +270,24 @@ public class email_filter {
 		 * else SPAM
 		 * return int[] classes
 		 */
+
+		for(int i = 0; i < features.length; i++)
+		{
+			double spamProb = 0;
+			double hamProb = 0;
+
+			for (int j = 0; j < features[j].length; j++)
+			{
+				hamProb	 += features[i][j] * features[1][j];
+				spamProb += features[i][j] * features[1][j];
+			}
+			hamProb += class_log_prior[0];
+			spamProb += class_log_prior[1];
+			if (spamProb > hamProb)
+				classes[i] = SPAM;
+			else
+				classes[i] = HAM;
+		}
 		return classes;
 	}
 	
@@ -383,8 +401,8 @@ public class email_filter {
 	}
 	
 	public static void main(String args[]){
-		String train_path = "your dataset directory/train-mails";
-		String test_path = "your dataset directory/test-mails";
+		String train_path = "train-mails";
+		String test_path = "test-mails";
 		email_filter ef = new email_filter();
 		
 		//construct dictionary
