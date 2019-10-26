@@ -428,12 +428,12 @@ public class email_filter {
 
 			for (int j = 0; j < features[i].length; j++)
 			{
-				hamProb	 += features[i][j] * features[1][j];
-				spamProb += features[i][j] * features[1][j];
+				hamProb	 += features[i][j] * feature_log_prob[0][j];
+				spamProb += features[i][j] * feature_log_prob[1][j];
 			}
 			hamProb += class_log_prior[0];
 			spamProb += class_log_prior[1];
-			if (Math.abs(spamProb) > Math.abs(hamProb))
+			if (spamProb > hamProb)
 				classes[i] = SPAM;
 			else
 				classes[i] = HAM;
