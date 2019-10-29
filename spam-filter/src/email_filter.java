@@ -362,11 +362,9 @@ public class email_filter {
 	        for( int col = 0; col < most_common; col++){
                 if(labels[row] == 1){
                     ham[col] += features[row][col];
-                    hamSum += features[row][col];
                 }
                 else{
                     spam[col] += features[row][col];
-                    spamSum += features[row][col];
                 }
             }
         }
@@ -439,7 +437,7 @@ public class email_filter {
 			}
 			hamProb += class_log_prior[0];
 			spamProb += class_log_prior[1];
-			if (spamProb > hamProb)
+			if (Math.abs(spamProb) > Math.abs(hamProb))
 				classes[i] = SPAM;
 			else
 				classes[i] = HAM;
@@ -494,8 +492,8 @@ public class email_filter {
 	}
 	
 	public static void main(String args[]){
-		String train_path = "train-mails";
-		String test_path = "test-mails";
+		String train_path = "C:\\Users\\rcwie\\OneDrive\\Documents\\Code\\Natural-Stupidity\\spam-filter\\train-mails";
+		String test_path = "C:\\Users\\rcwie\\OneDrive\\Documents\\Code\\Natural-Stupidity\\spam-filter\\test-mails";
 		email_filter ef = new email_filter();
 		
 		//construct dictionary
