@@ -48,6 +48,7 @@ def mutate(code_temp):
     code_temp = code_temp.replace("False1","False");
     return code_temp;
 # use some 
+# noinspection PyUnresolvedReferences
 def fitness(code_temp):
     score = 0;
     # you can use your own test array list
