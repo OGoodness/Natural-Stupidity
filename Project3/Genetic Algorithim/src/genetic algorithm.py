@@ -24,6 +24,7 @@ def mutate(code):
     return '\n'.join(str(e) for e in codeArray)
 
 
+def ChangeAssignmentOperation(codeArray):
     for i in range(0, len(codeArray)):
         assignmentCheck = codeArray[i].split(" ")
         if len(assignmentCheck) > 1:
