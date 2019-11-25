@@ -28,7 +28,7 @@ def ChangeAssignmentOperation(codeArray):
     for i in range(0, len(codeArray)):
         assignmentCheck = codeArray[i].split(" ")
         if len(assignmentCheck) > 1:
-            if assignmentCheck[1] == "=":
+            if assignmentCheck[1] == "=" or assignmentCheck[1] == "+=" or assignmentCheck[1] == "-=" or assignmentCheck[1] == "/=" or assignmentCheck[1] == "*=":
                 decider = random.randint(0, 11)
                 if decider == 0:
                     codeArray[i] = codeArray[i].replace("+", "*")
