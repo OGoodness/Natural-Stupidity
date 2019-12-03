@@ -9,7 +9,7 @@ def categorize_variables(codeArray):
                  "number": [],
                  "variable": [],
                  "array": []
-                }
+                 }
     for line in codeArray:
         if '=' in line:
             line = re.sub('\s+', '', line)
@@ -40,6 +40,8 @@ def categorize_variables(codeArray):
                 variables["array"].append(variable_name)
 
     return variables
+
+
 def swap_variables(codeArray):
     variables = categorize_variables(codeArray)
     output = []
@@ -57,23 +59,28 @@ def swap_variables(codeArray):
 
 def mutate(code):
     codeArray = code.splitlines()
-    codeArray = change_order(codeArray)
-    codeArray = swap_variables(codeArray)
-    codeArray = ChangeAssignmentOperation(codeArray)
+    if random.randint(1, 3) == 1:
+        mutation = random.randint(1, 3)
+        if mutation == 1:
+            codeArray = change_order(codeArray)
+        if mutation == 2:
+            codeArray = swap_variables(codeArray)
+        if mutation == 3:
+            codeArray = ChangeAssignmentOperation(codeArray)
     return '\n'.join(str(e) for e in codeArray)
 
 
 def Crossover(parents):
     previous = ''
-    genes = {"top": [], "bottom": [] }
+    genes = {"top": [], "bottom": []}
     children = []
     for parent in parents:
-        if parent != previous:
-            previous = parent
-            end = parent.count('\n')+1
-            middle = int(end / 2)
-            genes['top'].append(parent.splitlines()[0:middle])
-            genes['bottom'].append(parent.splitlines()[middle:end])
+        #if parent != previous:
+        previous = parent
+        end = parent.count('\n') + 1
+        middle = int(end / 2)
+        genes['top'].append(parent.splitlines()[0:middle])
+        genes['bottom'].append(parent.splitlines()[middle:end])
     for r in range(0, len(genes["top"])):
         for j in range(0, len(genes["bottom"])):
             if r != j:
@@ -81,12 +88,12 @@ def Crossover(parents):
     return children
 
 
-
 def ChangeAssignmentOperation(codeArray):
     for i in range(0, len(codeArray)):
         assignmentCheck = codeArray[i].split(" ")
         if len(assignmentCheck) > 1:
-            if assignmentCheck[1] == "=" or assignmentCheck[1] == "+=" or assignmentCheck[1] == "-=" or assignmentCheck[1] == "/=" or assignmentCheck[1] == "*=":
+            if assignmentCheck[1] == "=" or assignmentCheck[1] == "+=" or assignmentCheck[1] == "-=" or assignmentCheck[
+                1] == "/=" or assignmentCheck[1] == "*=":
                 decider = random.randint(0, 11)
                 if decider == 0:
                     codeArray[i] = codeArray[i].replace("+", "*")
@@ -134,20 +141,21 @@ def fitness(code, anwser):
         for i in range(0, len(arrayTest)):
             if arrayTest[i] == answer[i]:
                 score += 1
+            if answer[1] in arrayTest:
+                score += 1
     except:
         print("Unexpected error:")
         score = -1
     return score
 
 
-
 code = """def makeArray():
 \tarray = []
 \tx = 0 + 1
-\ty = x1 + 1
+\ty = x + 1
 \tarray.append(x)
 \tz = 2 - 2
-\tx.append(x)
+\tarray.append(x)
 \tx = 4 * 2
 \tarray.append(x)
 \treturn array"""
@@ -165,7 +173,9 @@ codes.append(code)
 offspring_per_pop = 6
 steps = 10
 highest_score = 0
-while highest_score != 3:
+while highest_score != 6:
+    if len(codes) < 6:
+        print("how")
     highest_score = 0
     ranks = {}
     for i in range(0, len(codes)):
@@ -174,17 +184,23 @@ while highest_score != 3:
         try:
             exec(codes[i])
             score = fitness(codes[i], answer)
-            print("Compiles")
+
+            #print("Compiles")
         except:
             print("Doesn't compile")
+            score = -1
         ranks[i] = score
         if score >= highest_score:
             highest_score = score
-        if score == 3:
-            break
+        if score > 0:
+            print(score)
+    if len(codes) < 6:
+        print("how")
     top_3 = sorted(ranks.keys(), key=ranks.get, reverse=True)[:3]
-
-    #Need to decide which ones get sent into crossover
+    sleep(3)
+    # Need to decide which ones get sent into crossover
     codes = Crossover(list(itemgetter(*top_3)(codes)))
+    if len(codes) < 6:
+        print("how")
 for x in codes:
     print(x)
