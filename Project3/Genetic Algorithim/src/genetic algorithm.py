@@ -71,12 +71,9 @@ def mutate(code):
 
 
 def Crossover(parents):
-    previous = ''
     genes = {"top": [], "bottom": []}
     children = []
     for parent in parents:
-        #if parent != previous:
-        previous = parent
         end = parent.count('\n') + 1
         middle = int(end / 2)
         genes['top'].append(parent.splitlines()[0:middle])
@@ -148,6 +145,19 @@ def fitness(code, anwser):
         score = -1
     return score
 
+def results(iteration, gen_high, highest_score, highest_score_gen, gen_size, pass_count, fail_count, codes = []):
+    if(len(codes) > 0):
+        print("\n\nFinal Generation Code: ")
+        for x in codes:
+            print(x, end="\n\n")
+        print("\n\nFinal Results: ")
+
+    print("\nIteration: {0}  \
+              \n\tHighest Score in Gen: {1} \
+              \n\tHighest Total Score: {2} (Gen {3}) \
+              \n\tGen Info (Size, Pass, Fail): {4}, {5}, {6}"
+          .format(iteration, gen_high, highest_score, highest_score_gen, gen_size, pass_count, fail_count))
+
 
 code = """def makeArray():
 \tarray = []
@@ -171,36 +181,37 @@ codes.append(code)
 codes.append(code)
 
 offspring_per_pop = 6
-steps = 10
-highest_score = 0
-while highest_score != 6:
-    if len(codes) < 6:
-        print("how")
-    highest_score = 0
+max_iterations = 1000
+highest_score = [0, 1]
+iteration = 0
+while True:
+    iteration += 1
+    gen_high = 0
     ranks = {}
-    for i in range(0, len(codes)):
+    fail_count = 0
+    gen_size = len(codes)
+    for i in range(0, gen_size):
         score = 0
         codes[i] = mutate(codes[i])
         try:
             exec(codes[i])
             score = fitness(codes[i], answer)
-
-            #print("Compiles")
-        except:
-            print("Doesn't compile")
+        except Exception as e:
+            fail_count += 1
             score = -1
         ranks[i] = score
-        if score >= highest_score:
-            highest_score = score
-        if score > 0:
-            print(score)
-    if len(codes) < 6:
-        print("how")
+        if score >= gen_high:
+            gen_high = score
     top_3 = sorted(ranks.keys(), key=ranks.get, reverse=True)[:3]
-    sleep(3)
-    # Need to decide which ones get sent into crossover
+    pass_count = gen_size - fail_count
+
+    if gen_high > highest_score[0]:
+        highest_score[0], highest_score[1] = gen_high, iteration
+    if highest_score == 6 or max_iterations <= iteration:
+        results(iteration, gen_high, highest_score[0], highest_score[1], gen_size, pass_count, fail_count, codes)
+        break
+    else:
+        results(iteration, gen_high, highest_score[0], highest_score[1], gen_size, pass_count, fail_count)
+
     codes = Crossover(list(itemgetter(*top_3)(codes)))
-    if len(codes) < 6:
-        print("how")
-for x in codes:
-    print(x)
+
