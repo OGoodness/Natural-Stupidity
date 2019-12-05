@@ -159,6 +159,31 @@ def results(iteration, gen_high, highest_score, highest_score_gen, gen_size, pas
           .format(iteration, gen_high, highest_score, highest_score_gen, gen_size, pass_count, fail_count))
 
 
+# def Sequential_Search(dlist, item):
+#     pos = 0
+#     found = False
+#     while pos < len(dlist) and not found:
+#         if dlist[pos] == item:
+#             found = True
+#         else:
+#             pos = pos + 1
+#     return found, pos
+#
+# Sequential_Search([11, 23, 58, 31, 56, 77, 43, 12, 65, 19], 31))
+# Correct Output: (True, 3)
+
+# def bubbleSort(arr):
+#     n = len(arr)
+#     # Traverse through all array elements
+#     for i in range(n):
+#         for j in range(0, n - i - 1):
+#             if arr[j] > arr[j + 1]:
+#                 arr[j], arr[j + 1] = arr[j + 1], arr[j]
+#
+# bubbleSort([64, 34, 25, 12, 22, 11, 90])
+# Correct Output: [11, 12, 22, 25, 34, 64, 90]
+
+
 code = """def makeArray():
 \tarray = []
 \tx = 0 + 1
