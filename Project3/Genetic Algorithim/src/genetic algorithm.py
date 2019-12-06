@@ -171,6 +171,12 @@ def results(iteration, gen_high, max_score, highest_score, highest_score_gen, ge
 #
 # Sequential_Search([11, 23, 58, 31, 56, 77, 43, 12, 65, 19], 31))
 # Correct Output: (True, 3)
+#
+# FINAL RESULT
+#     Iteration: 1000
+#         Highest Score in Current Gen: 6 / 6
+#         Highest Total Score: 6 (Gen 20)
+#         Gen Info (Size, Pass, Fail): 6, 6, 0
 
 # def bubbleSort():
 # \tarr = [64, 34, 25, 12, 22, 11, 90]
@@ -183,6 +189,12 @@ def results(iteration, gen_high, max_score, highest_score, highest_score_gen, ge
 #
 # bubbleSort([64, 34, 25, 12, 22, 11, 90])
 # Correct Output: [11, 12, 22, 25, 34, 64, 90]
+#
+# FINAL RESULT
+#     Iteration: 1000
+#         Highest Score in Current Gen: 6 / 6
+#         Highest Total Score: 6 (Gen 13)
+#         Gen Info (Size, Pass, Fail): 6, 6, 0
 
 
 code = """def makeArray():
