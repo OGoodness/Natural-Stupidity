@@ -1,7 +1,6 @@
 import random
 import re
 from operator import itemgetter
-from time import sleep
 
 
 def categorize_variables(codeArray):
@@ -134,6 +133,7 @@ def fitness(code, anwser):
     score = 0
     arrayTest = []
     try:
+        #NEED TO CHANGE THIS WHEN TESTING OTHER FUNCTIONS
         arrayTest = makeArray()
         for i in range(0, len(arrayTest)):
             if arrayTest[i] == answer[i]:
@@ -145,7 +145,7 @@ def fitness(code, anwser):
         score = -1
     return score
 
-def results(iteration, gen_high, highest_score, highest_score_gen, gen_size, pass_count, fail_count, codes = []):
+def results(iteration, gen_high, max_score, highest_score, highest_score_gen, gen_size, pass_count, fail_count, codes = []):
     if(len(codes) > 0):
         print("\n\nFinal Generation Code: ")
         for x in codes:
@@ -153,10 +153,10 @@ def results(iteration, gen_high, highest_score, highest_score_gen, gen_size, pas
         print("\n\nFinal Results: ")
 
     print("\nIteration: {0}  \
-              \n\tHighest Score in Gen: {1} \
-              \n\tHighest Total Score: {2} (Gen {3}) \
-              \n\tGen Info (Size, Pass, Fail): {4}, {5}, {6}"
-          .format(iteration, gen_high, highest_score, highest_score_gen, gen_size, pass_count, fail_count))
+              \n\tHighest Score in Current Gen: {1} / {2} \
+              \n\tHighest Total Score: {3} (Gen {4}) \
+              \n\tGen Info (Size, Pass, Fail): {5}, {6}, {7}"
+          .format(iteration, gen_high, max_score, highest_score, highest_score_gen, gen_size, pass_count, fail_count))
 
 
 # def Sequential_Search(dlist, item):
@@ -172,13 +172,14 @@ def results(iteration, gen_high, highest_score, highest_score_gen, gen_size, pas
 # Sequential_Search([11, 23, 58, 31, 56, 77, 43, 12, 65, 19], 31))
 # Correct Output: (True, 3)
 
-# def bubbleSort(arr):
-#     n = len(arr)
-#     # Traverse through all array elements
-#     for i in range(n):
-#         for j in range(0, n - i - 1):
-#             if arr[j] > arr[j + 1]:
-#                 arr[j], arr[j + 1] = arr[j + 1], arr[j]
+# def bubbleSort():
+# \tarr = [64, 34, 25, 12, 22, 11, 90]
+# \tn = len(arr)
+# \tfor i in range(n):
+# \t\tfor j in range(0, n - i - 1):
+# \t\t\tif arr[j] > arr[j + 1]:
+# \t\t\t\tarr[j], arr[j + 1] = arr[j + 1], arr[j]
+# \treturn arr
 #
 # bubbleSort([64, 34, 25, 12, 22, 11, 90])
 # Correct Output: [11, 12, 22, 25, 34, 64, 90]
@@ -187,9 +188,8 @@ def results(iteration, gen_high, highest_score, highest_score_gen, gen_size, pas
 code = """def makeArray():
 \tarray = []
 \tx = 0 + 1
-\ty = x + 1
 \tarray.append(x)
-\tz = 2 - 2
+\tx = 2 - 2
 \tarray.append(x)
 \tx = 4 * 2
 \tarray.append(x)
@@ -206,6 +206,7 @@ codes.append(code)
 codes.append(code)
 
 offspring_per_pop = 6
+max_score = len(answer) * 2
 max_iterations = 1000
 highest_score = [0, 1]
 iteration = 0
@@ -232,11 +233,10 @@ while True:
 
     if gen_high > highest_score[0]:
         highest_score[0], highest_score[1] = gen_high, iteration
-    if highest_score == 6 or max_iterations <= iteration:
-        results(iteration, gen_high, highest_score[0], highest_score[1], gen_size, pass_count, fail_count, codes)
+    if highest_score == max_score or max_iterations <= iteration:
+        results(iteration, gen_high, max_score, highest_score[0], highest_score[1], gen_size, pass_count, fail_count, codes)
         break
     else:
-        results(iteration, gen_high, highest_score[0], highest_score[1], gen_size, pass_count, fail_count)
-
+        results(iteration, gen_high, max_score, highest_score[0], highest_score[1], gen_size, pass_count, fail_count)
     codes = Crossover(list(itemgetter(*top_3)(codes)))
 
