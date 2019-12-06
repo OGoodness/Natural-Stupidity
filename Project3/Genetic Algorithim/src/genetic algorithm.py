@@ -159,44 +159,6 @@ def results(iteration, gen_high, max_score, highest_score, highest_score_gen, ge
           .format(iteration, gen_high, max_score, highest_score, highest_score_gen, gen_size, pass_count, fail_count))
 
 
-# def Sequential_Search(dlist, item):
-#     pos = 0
-#     found = False
-#     while pos < len(dlist) and not found:
-#         if dlist[pos] == item:
-#             found = True
-#         else:
-#             pos = pos + 1
-#     return found, pos
-#
-# Sequential_Search([11, 23, 58, 31, 56, 77, 43, 12, 65, 19], 31))
-# Correct Output: (True, 3)
-#
-# FINAL RESULT
-#     Iteration: 1000
-#         Highest Score in Current Gen: 6 / 6
-#         Highest Total Score: 6 (Gen 20)
-#         Gen Info (Size, Pass, Fail): 6, 6, 0
-
-# def bubbleSort():
-# \tarr = [64, 34, 25, 12, 22, 11, 90]
-# \tn = len(arr)
-# \tfor i in range(n):
-# \t\tfor j in range(0, n - i - 1):
-# \t\t\tif arr[j] > arr[j + 1]:
-# \t\t\t\tarr[j], arr[j + 1] = arr[j + 1], arr[j]
-# \treturn arr
-#
-# bubbleSort([64, 34, 25, 12, 22, 11, 90])
-# Correct Output: [11, 12, 22, 25, 34, 64, 90]
-#
-# FINAL RESULT
-#     Iteration: 1000
-#         Highest Score in Current Gen: 6 / 6
-#         Highest Total Score: 6 (Gen 13)
-#         Gen Info (Size, Pass, Fail): 6, 6, 0
-
-
 code = """def makeArray():
 \tarray = []
 \tx = 0 + 1
@@ -206,6 +168,8 @@ code = """def makeArray():
 \tx = 4 * 2
 \tarray.append(x)
 \treturn array"""
+
+
 
 answer = [0, 4, 2]
 
@@ -245,10 +209,113 @@ while True:
 
     if gen_high > highest_score[0]:
         highest_score[0], highest_score[1] = gen_high, iteration
-    if highest_score == max_score or max_iterations <= iteration:
+    if highest_score[0] >= max_score or max_iterations <= iteration:
         results(iteration, gen_high, max_score, highest_score[0], highest_score[1], gen_size, pass_count, fail_count, codes)
         break
     else:
         results(iteration, gen_high, max_score, highest_score[0], highest_score[1], gen_size, pass_count, fail_count)
     codes = Crossover(list(itemgetter(*top_3)(codes)))
 
+
+
+#########################################################
+################TEST CASES BELOW#########################
+#########################################################
+
+###INIT SEQUENTIAL###
+# def Sequential_Search(dlist, item):
+# \tfound = False
+# \twhile pos < len(dlist) and not found:
+# \t\tif dlist[pos] == item:
+# \t\t\tfound = True
+# \t\telse:
+# \t\t\tpos = pos + 1
+# \tpos = 0
+# \treturn found, pos
+#
+# Sequential_Search([11, 23, 58, 31, 56, 77, 43, 12, 65, 19], 31))
+# Correct Output: (True, 3)
+#
+# FINAL RESULT
+# Iteration: 5
+# 	Highest Score in Current Gen: 20 / 20
+# 	Highest Total Score: 20 (Gen 5)
+# 	Gen Info (Size, Pass, Fail): 6, 6, 0
+#
+# BEST SEQUENTIAL
+#     def Sequential_Search(dlist, item):
+#     \tpos = 0
+#     \tfound = False
+#     \twhile pos < len(dlist) and not found:
+#     \t\tif dlist[pos] == item:
+#     \t\t\tfound = True
+#     \t\telse:
+#     \t\t\tpos = pos + 1
+#     \treturn found, pos
+
+
+
+
+###INIT BUBBLE###
+# def bubbleSort():
+# \tarr = [64, 34, 25, 12, 22, 11, 90]
+# \tfor i in range(n):
+# \t\tfor j in range(0, n - i - 1):
+# \t\t\tif arr[j] > arr[j + 1]:
+# \t\t\t\tarr[j], arr[j + 1] = arr[j + 1], arr[j]
+# \tn = len(arr)
+# \treturn arr
+#
+# bubbleSort([64, 34, 25, 12, 22, 11, 90])
+# Correct Output: [11, 12, 22, 25, 34, 64, 90]
+#
+# FINAL RESULT
+#
+# Iteration: 1000
+# 	Highest Score in Current Gen: 8 / 14
+# 	Highest Total Score: 8 (Gen 414)
+# 	Gen Info (Size, Pass, Fail): 6, 6, 0
+
+# BEST BUBBLE
+#     def bubbleSort():
+#     \tarr = [64, 34, 25, 12, 22, 11, 90]
+#     \tn = len(arr)
+#     \tfor i in range(n):
+#     \t\tfor j in range(0, n - i - 1):
+#     \t\t\tif arr[j] > arr[j + 1]:
+#     \t\t\t\tarr[j], arr[j + 1] = arr[j + 1], arr[j]
+#     \treturn arr
+
+
+
+
+###INIT MAKEARRAY###
+# def makeArray():
+# \tarray = []
+# \tx = 0 + 1
+# \tarray.append(x)
+# \tx = 2 - 2
+# \tarray.append(x)
+# \tx = 4 * 2
+# \tarray.append(x)
+# \treturn array
+#
+# Correct: [0, 4, 2]
+#
+# FINAL RESULT
+#
+# Iteration: 30
+# 	Highest Score in Current Gen: 6 / 6
+# 	Highest Total Score: 6 (Gen 30)
+# 	Gen Info (Size, Pass, Fail): 6, 6, 0
+#
+# BEST MAKEARRAY
+#     def makeArray():
+#         x = 0 * 1
+#         array = []
+#         array.append(x)
+#         x = 2 * 2
+#         array.append(x)
+#         x = 4 / 2
+#         array.append(x)
+#         return array
